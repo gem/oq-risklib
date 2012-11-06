@@ -56,8 +56,12 @@ class ScenarioRiskTestCase(unittest.TestCase):
         )
 
     def test_mean_based(self):
-        calculator = api.scenario_risk(
-            self.vulnerability_model_mean, None, None)
+        args_dict = {'seed': None,
+                     'correlation_type': None,
+                     'insured': False}
+
+        calculator = api.ScenarioRisk(
+            self.vulnerability_model_mean, args_dict)
 
         asset_output = calculator(
             input.Asset("a1", "RM", 3000, None),
@@ -101,8 +105,11 @@ class ScenarioRiskTestCase(unittest.TestCase):
             RC=vf([0.035, 0.07, 0.14, 0.28, 0.56], [0.1, 0.2, 0.3, 0.4, 0.5]),
             )
 
-        calculator = api.scenario_risk(vulnerability_model, seed=37,
-            correlation_type=None)
+        args_dict = {'seed': 37,
+                     'correlation_type': None,
+                     'insured': False}
+
+        calculator = api.ScenarioRisk(vulnerability_model, args_dict)
 
         asset_output = calculator(
             input.Asset("a1", "RM", 3000, None), gmv.a1)
@@ -137,9 +144,12 @@ class ScenarioRiskTestCase(unittest.TestCase):
         self.assertTrue(total_losses[1] > 443.63)
 
     def test_insured_losses_mean(self):
-        calculator = api.scenario_risk(
-            self.vulnerability_model_mean,
-            None, None, insured=True)
+        args_dict = {'correlation_type': None,
+                     'seed': None,
+                     'insured': True}
+
+        calculator = api.ScenarioRisk(
+            self.vulnerability_model_mean, args_dict)
 
         asset_output = calculator(
             input.Asset("a1", "RM", 3000, None,

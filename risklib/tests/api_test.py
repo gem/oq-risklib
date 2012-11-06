@@ -103,8 +103,10 @@ class ConditionalLossesTestCase(unittest.TestCase):
         with mock.patch("risklib.classical._conditional_losses") as stub:
             stub.return_value = {0.1: 0.5, 0.2: 0.5}
 
+            args_dict = {'conditional_loss_poes': [0.1, 0.2]}
+
             asset_output = api.conditional_losses(
-                [0.1, 0.2], loss_curve_calculator)(asset, 1.0)
+                loss_curve_calculator, args_dict    )(asset, 1.0)
 
             loss_curve_calculator.assert_called_with(asset, 1.0)
 
@@ -126,7 +128,9 @@ class ClassicalCalculatorTestCase(unittest.TestCase):
             [0.1, 0.2], [1.0, 0.5], [0.0, 0.0], "LN")
 
         vulnerability_model = {"RC": function}
-        asset_output = api.classical(vulnerability_model)(asset, hazard_curve)
+        args_dict = {'steps': 10}
+        asset_output = api.Classical(vulnerability_model, args_dict)(asset,
+            hazard_curve)
 
         self.assertEquals(asset, asset_output.asset)
 
@@ -147,7 +151,7 @@ class ScenarioDamageCalculatorTestCase(unittest.TestCase):
 
         asset = input.Asset("a1", "RC", None, None, number_of_units=1.0)
 
-        calculator = api.scenario_damage(fragility_model,
+        calculator = api.ScenarioDamage(fragility_model,
             {"RC": [fragility_function]})
 
         asset_output = calculator(asset, [0.11, 0.12, 0.13])
@@ -172,9 +176,11 @@ class BCRCalculatorTestCase(unittest.TestCase):
 
         vulnerability_model = {"RC": function}
         vulnerability_model_retrofitted = {"RC": function}
-
-        asset_output = (api.bcr(api.classical(vulnerability_model),
-            api.classical(vulnerability_model_retrofitted), 1.0, 1.0)
+        args_dict = {'interest_rate': 1.0,
+                     'asset_life_expectancy': 1.0,
+                     'steps': 10}
+        asset_output = (api.bcr(vulnerability_model,
+            vulnerability_model_retrofitted, api.Classical, args_dict)
             (asset, hazard_curve))
 
         self.assertEquals(asset, asset_output.asset)
@@ -197,8 +203,12 @@ class ProbabilisticEventBasedCalculatorTestCase(unittest.TestCase):
 
         vulnerability_model = {"RC": function}
 
-        asset_output = api.probabilistic_event_based(
-            vulnerability_model, 10, 37, "perfect")(asset, hazard)
+        args_dict = {'loss_histogram_bins': 10,
+                     'seed': 37,
+                     'correlation_type': "perfect"}
+
+        asset_output = api.ProbabilisticEventBased(
+            vulnerability_model, args_dict)(asset, hazard)
 
         self.assertEquals(asset, asset_output.asset)
 
@@ -221,7 +231,8 @@ class InsuredLossesTestCase(unittest.TestCase):
 
         losses_calculator = mock.Mock(return_value=asset_output)
 
-        with mock.patch("risklib.event_based._compute_insured_losses") as stub:
+        with mock.patch(
+            "risklib.insured_loss.compute_insured_losses") as stub:
             stub.return_value = [0.5, 0.5, 0.5]
 
             asset_output = api.insured_losses(losses_calculator)(asset, hazard)
@@ -250,15 +261,19 @@ class InsuredCurvesTestCase(unittest.TestCase):
         insured_losses_calculator = mock.Mock(return_value=asset_output)
 
         with mock.patch(
-            "risklib.event_based._compute_insured_loss_ratio_curve") as stub:
+            "risklib.insured_loss.compute_insured_loss_ratio_curve") as stub:
 
             insured_loss_ratio_curve = curve.Curve(
                 [(0.5, 1.0), (0.5, 1.0), (0.5, 1.0)])
 
             stub.return_value = insured_loss_ratio_curve
 
-            asset_output = api.insured_curves(vulnerability_model, 10, 37,
-                "perfect", insured_losses_calculator)(asset, hazard)
+            args_dict = {'loss_histogram_bins': 10,
+                         'seed': 37,
+                         'correlation_type': "perfect"}
+
+            asset_output = api.insured_curves(vulnerability_model,
+                insured_losses_calculator, args_dict)(asset, hazard)
 
             insured_losses_calculator.assert_called_with(asset, hazard)
 
@@ -285,8 +300,12 @@ class ScenarioRiskCalculatorTestCase(unittest.TestCase):
 
         vulnerability_model = {"RC": function}
 
-        asset_output = api.scenario_risk(
-            vulnerability_model, 37, "perfect")(asset, hazard)
+        args_dict = {'seed': 37,
+                     'correlation_type': "perfect",
+                     'insured': False}
+
+        asset_output = api.ScenarioRisk(
+            vulnerability_model, args_dict)(asset, hazard)
 
         self.assertEquals(asset, asset_output.asset)
 
@@ -295,9 +314,11 @@ class ScenarioRiskCalculatorTestCase(unittest.TestCase):
         self.assertIsNotNone(asset_output.mean)
         self.assertIsNotNone(asset_output.standard_deviation)
 
+        args_dict['seed'] = True
+
         # same, but with an insured calculator
-        asset_output = api.scenario_risk(
-            vulnerability_model, 37, "perfect", insured=True)(asset, hazard)
+        asset_output = api.ScenarioRisk(
+            vulnerability_model, args_dict)(asset, hazard)
 
         self.assertEquals(asset, asset_output.asset)
 

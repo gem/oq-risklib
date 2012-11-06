@@ -23,7 +23,7 @@ from risklib import vulnerability_function
 
 class BCRTestCase(unittest.TestCase):
 
-    def test_bcr_classical(self):
+    def test_bcr_Classical(self):
         vulnerability_function_rm = (
             vulnerability_function.VulnerabilityFunction(
             [0.1, 0.2, 0.3, 0.45, 0.6], [0.05, 0.1, 0.2, 0.4, 0.8],
@@ -39,11 +39,11 @@ class BCRTestCase(unittest.TestCase):
 
         asset = input.Asset("a1", "VF", 2, None, retrofitting_cost=0.1)
 
-        calculator_rm = api.classical(vulnerability_model_rm, steps=5)
-        calculator_rf = api.classical(vulnerability_model_rf, steps=5)
-
-        calculator_bcr = api.bcr(calculator_rm, calculator_rf,
-            interest_rate=0.05, asset_life_expectancy=40)
+        args_dict = {'interest_rate': 0.05,
+                     'asset_life_expectancy': 40,
+                     'steps': 10}
+        calculator_bcr = api.bcr(vulnerability_model_rm,
+            vulnerability_model_rf, api.Classical, args_dict)
 
         hazard = [
             (0.001, 0.0398612669790014), (0.01, 0.0398612669790014),
