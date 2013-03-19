@@ -30,7 +30,7 @@ import collections
 
 import numpy
 
-from openquake.risklib.scientific import VulnerabilityFunction
+from openquake.risklib import scientific
 from openquake.risklib.utils import Register
 
 
@@ -57,7 +57,9 @@ class Archive(object):
     def __init__(self, path):
         self.path = path
         self.zfile = None
-        if not os.path.isdir(path):
+        if not os.path.exists(path):
+            raise IOError('No such file or directory: %r' % path)
+        elif not os.path.isdir(path):
             assert zipfile.is_zipfile(path), '%r is not a zipfile' % path
             self.zfile = zipfile.ZipFile(path)
 
@@ -79,9 +81,21 @@ def read_fragility(rows):
     Given a list of string lists returns a FragilityModel
     """
     irows = iter(rows)
-    fmt, iml, limit_states = map(ast.literal_eval, irows.next())
-    args = [map(ast.literal_eval, row) for row in irows]
-    return [fmt, iml['IMT'], iml['imls'], limit_states] + args
+    first_line = irows.next()
+    fmt, limit_states = map(ast.literal_eval, first_line)
+    fns_data = [map(ast.literal_eval, row) for row in irows]
+    if fmt == "continuous":
+        fns = dict([(taxonomy,
+                     dict(imt=imt,
+                          fns=[scientific.FragilityFunctionContinuous(
+                              mean, stddev) for mean, stddev in params]))
+                    for taxonomy, imt, params
+                    in fns_data])
+    else:
+        raise NotImplementedError
+    return {'format': fmt,
+            'limit_states': limit_states,
+            'fragility_functions': fns}
 
 
 @read.add('vulnerability')
@@ -93,7 +107,7 @@ def read_vulnerability(rows):
     for row in rows:
         id_, imt, iml, loss_ratio, coefficients, distribution = map(
             ast.literal_eval, row)
-        d[id_] = VulnerabilityFunction(
+        d[id_] = scientific.VulnerabilityFunction(
             iml, loss_ratio, coefficients, distribution)
     return d
 
