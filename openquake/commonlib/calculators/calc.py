@@ -34,7 +34,7 @@ MAX_INT = 2 ** 31 - 1  # this is used in the random number generator
 # in this way even on 32 bit machines Python will not have to convert
 # the generated seed into a long integer
 
-############### utilities for the classical calculator ################
+# ############## utilities for the classical calculator ############## #
 
 SourceRuptureSites = collections.namedtuple(
     'SourceRuptureSites',
@@ -93,7 +93,7 @@ def gen_ruptures_for_site(site, sources, maximum_distance, monitor):
         yield src, [row.rupture for row in rows]
 
 
-############### utilities for the scenario calculators ################
+# ############## utilities for the scenario calculators ############### #
 
 
 def calc_gmfs_fast(oqparam, sitecol):
@@ -138,7 +138,7 @@ def calc_gmfs(oqparam, sitecol):
     # res[imt] is a matrix R x N
     return {imt: numpy.array(matrix).T for imt, matrix in res.iteritems()}
 
-########################### hazard maps #######################################
+# ######################### hazard maps ################################### #
 
 # cutoff value for the poe
 EPSILON = 1E-30
@@ -195,7 +195,47 @@ def compute_hazard_maps(curves, imls, poes):
     return numpy.array(result).transpose()
 
 
-###################### utilities for classical calculators #################
+###########################  GMF->curves ######################################
+
+# NB (MS): the approach used here will not work for non-poissonian models
+def gmvs_to_haz_curve(gmvs, imls, invest_time, duration):
+    """
+    Given a set of ground motion values (``gmvs``) and intensity measure levels
+    (``imls``), compute hazard curve probabilities of exceedance.
+
+    :param gmvs:
+        A list of ground motion values, as floats.
+    :param imls:
+        A list of intensity measure levels, as floats.
+    :param float invest_time:
+        Investigation time, in years. It is with this time span that we compute
+        probabilities of exceedance.
+
+        Another way to put it is the following. When computing a hazard curve,
+        we want to answer the question: What is the probability of ground
+        motion meeting or exceeding the specified levels (``imls``) in a given
+        time span (``invest_time``).
+    :param float duration:
+        Time window during which GMFs occur. Another was to say it is, the
+        period of time over which we simulate ground motion occurrences.
+
+        NOTE: Duration is computed as the calculation investigation time
+        multiplied by the number of stochastic event sets.
+
+    :returns:
+        Numpy array of PoEs (probabilities of exceedance).
+    """
+    # convert to numpy array and redimension so that it can be broadcast with
+    # the gmvs for computing PoE values; there is a gmv for each rupture
+    # here is an example: imls = [0.03, 0.04, 0.05], gmvs=[0.04750576]
+    # => num_exceeding = [1, 1, 0] coming from 0.04750576 > [0.03, 0.04, 0.05]
+    imls = numpy.array(imls).reshape((len(imls), 1))
+    num_exceeding = numpy.sum(numpy.array(gmvs) >= imls, axis=1)
+    poes = 1 - numpy.exp(- (invest_time / duration) * num_exceeding)
+    return poes
+
+
+# ################## utilities for classical calculators ################ #
 
 def agg_prob(acc, prob):
     """
