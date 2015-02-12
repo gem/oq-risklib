@@ -187,6 +187,8 @@ class ClassicalCalculator(base.HazardCalculator):
         return saved
 
 
+# #####################    TILING CALCULATOR     ######################### #
+
 def is_effective_trt_model(result_dict, trt_model):
     """
     Returns True on tectonic region types
