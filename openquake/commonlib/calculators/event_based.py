@@ -43,12 +43,14 @@ SESRupture = collections.namedtuple(
     'SESRupture', 'rupture site_indices seed tag trt_model_id')
 
 
-def compute_ruptures(sources, sitecol, monitor):
+def compute_ruptures(sources, sitecol, sc_dict, monitor):
     """
     :param sources:
         List of commonlib.source.Source tuples
     :param sitecol:
         a :class:`openquake.hazardlib.site.SiteCollection` instance
+    :param sc_dict:
+        mapping trt_id, idx -> ordinal
     :param monitor:
         monitor instance
     :returns:
@@ -66,27 +68,31 @@ def compute_ruptures(sources, sitecol, monitor):
     # Compute and save stochastic event sets
     rnd = random.Random()
     for src in sources:
+        s_sites = src.filter_sites_by_distance_to_source(
+            oq.maximum_distance, sitecol)
+        if s_sites is None:
+            continue
+
+        # `ses_num_occ` is of kind rup -> ses_id -> num_occurrences
+        # for each occurring rupture for each ses in the ses collection
+        ses_num_occ = AccumDict()
+        ruptures_per_src = []
+        for i, rup in enumerate(src.iter_ruptures()):
+            rup.rup_no = i
+            ruptures_per_src.append(rup)
+            ses_num_occ[rup] = AccumDict()
+
         for idx, seed in enumerate(src.seed):
             rnd.seed(seed)  # keep this here and not after the filtering;
             # in this way changing the maximum distance does not change the
             # generated seeds, which could be surprising
-
-            s_sites = src.filter_sites_by_distance_to_source(
-                oq.maximum_distance, sitecol)
-            if s_sites is None:
-                continue
-
-            # the dictionary `ses_num_occ` contains [(ses, num_occurrences)]
-            # for each occurring rupture for each ses in the ses collection
-            ses_num_occ = collections.defaultdict(list)
             # generating ruptures for the given source
-            for rup_no, rup in enumerate(src.iter_ruptures(), 1):
-                rup.rup_no = rup_no
+            for rup in ruptures_per_src:
                 for ses_idx in all_ses:
                     numpy.random.seed(rnd.randint(0, MAX_INT))
                     num_occurrences = rup.sample_number_of_occurrences()
                     if num_occurrences:
-                        ses_num_occ[rup].append((ses_idx, num_occurrences))
+                        ses_num_occ[rup] += {ses_idx: num_occurrences}
 
             # NB: the number of occurrences is very low, << 1, so it is
             # more efficient to filter only the ruptures that occur, i.e.
@@ -103,13 +109,15 @@ def compute_ruptures(sources, sitecol, monitor):
                     else None  # None means that nothing was filtered
 
                 # creating SESRuptures
-                for ses_idx, num_occurrences in ses_num_occ[rup]:
+                for ses_idx, num_occurrences in sorted(
+                        ses_num_occ[rup].iteritems()):
                     for occ_no in range(1, num_occurrences + 1):
                         seed = rnd.randint(0, MAX_INT)
-                        tag = 'trt=%02d|ses=%04d|src=%s|rup=%03d-%02d' % (
-                            trt_model_id, ses_idx, src.source_id, rup.rup_no,
+                        sc_id = sc_dict[trt_model_id, idx]
+                        tag = 'col=%02d|ses=%04d|src=%s|rup=%03d-%02d' % (
+                            sc_id, ses_idx, src.source_id, rup.rup_no,
                             occ_no)
-                        sr = SESRupture(rup, indices, seed, tag, trt_model_id)
+                        sr = SESRupture(rup, indices, seed, tag, sc_id)
                         sesruptures += {(trt_model_id, idx): [sr]}
 
     return sesruptures
@@ -129,8 +137,13 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
         super(EventBasedRuptureCalculator, self).pre_execute()
         rnd = random.Random()
         rnd.seed(self.oqparam.random_seed)
+        self.sc_dict = {}  # trt_id, idx -> ses_coll_idx
+        sc_ordinal = 0
         for smodel in self.composite_source_model:
             for trt_model in smodel.trt_models:
+                for idx in range(smodel.samples):
+                    self.sc_dict[trt_model.id, idx] = sc_ordinal
+                    sc_ordinal += 1
                 for src in trt_model.sources:
                     seeds = []
                     for _ in range(smodel.samples):
@@ -148,7 +161,7 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
         sources = list(self.composite_source_model.sources)
         return parallel.apply_reduce(
             self.core_func.__func__,
-            (sources, self.sitecol, monitor),
+            (sources, self.sitecol, self.sc_dict, monitor),
             concurrent_tasks=self.oqparam.concurrent_tasks,
             weight=operator.attrgetter('weight'),
             key=operator.attrgetter('trt_model_id'))
