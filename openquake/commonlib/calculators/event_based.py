@@ -59,11 +59,9 @@ def compute_ruptures(sources, sitecol, sc_dict, monitor):
     # NB: by construction each block is a non-empty list with
     # sources of the same trt_model_id and the same num_samples
     trt_model_id = sources[0].trt_model_id
-    num_samples = len(sources[0].seed)
     oq = monitor.oqparam
     all_ses = range(1, oq.ses_per_logic_tree_path + 1)
-    sesruptures = AccumDict(
-        {(trt_model_id, idx): [] for idx in range(num_samples)})
+    sesruptures = AccumDict()  # sc_id -> ruptures
 
     # Compute and save stochastic event sets
     rnd = random.Random()
@@ -77,7 +75,7 @@ def compute_ruptures(sources, sitecol, sc_dict, monitor):
         # for each occurring rupture for each ses in the ses collection
         ses_num_occ = AccumDict()
         ruptures_per_src = []
-        for i, rup in enumerate(src.iter_ruptures()):
+        for i, rup in enumerate(src.iter_ruptures(), 1):
             rup.rup_no = i
             ruptures_per_src.append(rup)
             ses_num_occ[rup] = AccumDict()
@@ -117,8 +115,8 @@ def compute_ruptures(sources, sitecol, sc_dict, monitor):
                         tag = 'col=%02d|ses=%04d|src=%s|rup=%03d-%02d' % (
                             sc_id, ses_idx, src.source_id, rup.rup_no,
                             occ_no)
-                        sr = SESRupture(rup, indices, seed, tag, sc_id)
-                        sesruptures += {(trt_model_id, idx): [sr]}
+                        sr = SESRupture(rup, indices, seed, tag, trt_model_id)
+                        sesruptures += {sc_id: [sr]}
 
     return sesruptures
 
