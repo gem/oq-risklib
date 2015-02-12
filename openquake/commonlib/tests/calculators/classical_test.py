@@ -180,6 +180,9 @@ hazard_uhs-smltp_SM2_a3pt2b0pt8-gsimltp_CB2008_*-ltr_7.csv'''.split()
         expected = [
             'hazard_curve-smltp_b1-gsimltp_b1-ltr_0.csv',
             'hazard_curve-smltp_b2-gsimltp_b1-ltr_1.csv',
+            'hazard_curve-smltp_b2-gsimltp_b1-ltr_2.csv',
+            'hazard_curve-smltp_b2-gsimltp_b1-ltr_3.csv',
+            'hazard_curve-smltp_b2-gsimltp_b1-ltr_4.csv',
         ]
         out = self.run_calc(case_17.__file__, 'job.ini', exports='csv')
         for fname in expected:

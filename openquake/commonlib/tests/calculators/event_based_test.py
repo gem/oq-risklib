@@ -188,7 +188,7 @@ class EventBasedTestCase(CalculatorTestCase):
             out['hazard_curve-smltp_b1-gsimltp_b1-ltr_0.csv'])
 
     @attr('qa', 'hazard', 'event_based')
-    def test_case_17(self):
+    def test_case_17(self):  # oversampling
         expected = [
             'hazard_curve-smltp_b1-gsimltp_b1-ltr_0.csv',
             'hazard_curve-smltp_b2-gsimltp_b1-ltr_1.csv',
