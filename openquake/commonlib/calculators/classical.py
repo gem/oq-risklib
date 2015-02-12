@@ -101,6 +101,10 @@ class ClassicalCalculator(base.HazardCalculator):
         :param result:
             a nested dictionary (trt_id, gsim) -> IMT -> hazard curves
         """
+        for key, curves_by_imt in result.iteritems():
+            # safety check: this should never happen
+            assert curves_by_imt, (
+                'There are no curves for the key %s' % str(key))
         curves_by_rlz = self.rlzs_assoc.combine(result)
         rlzs = self.rlzs_assoc.realizations
         oq = self.oqparam

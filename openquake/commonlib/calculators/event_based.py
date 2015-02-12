@@ -55,61 +55,64 @@ def compute_ruptures(sources, sitecol, monitor):
         a dictionary trt_model_id -> [Rupture instances]
     """
     # NB: by construction each block is a non-empty list with
-    # sources of the same trt_model_id
+    # sources of the same trt_model_id and the same num_samples
     trt_model_id = sources[0].trt_model_id
+    num_samples = len(sources[0].seed)
     oq = monitor.oqparam
     all_ses = range(1, oq.ses_per_logic_tree_path + 1)
-    sesruptures = []
+    sesruptures = AccumDict(
+        {(trt_model_id, idx): [] for idx in range(num_samples)})
 
     # Compute and save stochastic event sets
     rnd = random.Random()
     for src in sources:
-        rnd.seed(src.seed)  # keep this here and not after the filtering;
-        # in this way changing the maximum distance does not change the
-        # generated seeds, which could be surprising
+        for idx, seed in enumerate(src.seed):
+            rnd.seed(seed)  # keep this here and not after the filtering;
+            # in this way changing the maximum distance does not change the
+            # generated seeds, which could be surprising
 
-        s_sites = src.filter_sites_by_distance_to_source(
-            oq.maximum_distance, sitecol)
-        if s_sites is None:
-            continue
-
-        # the dictionary `ses_num_occ` contains [(ses, num_occurrences)]
-        # for each occurring rupture for each ses in the ses collection
-        ses_num_occ = collections.defaultdict(list)
-        # generating ruptures for the given source
-        for rup_no, rup in enumerate(src.iter_ruptures(), 1):
-            rup.rup_no = rup_no
-            for ses_idx in all_ses:
-                numpy.random.seed(rnd.randint(0, MAX_INT))
-                num_occurrences = rup.sample_number_of_occurrences()
-                if num_occurrences:
-                    ses_num_occ[rup].append((ses_idx, num_occurrences))
-
-        # NB: the number of occurrences is very low, << 1, so it is
-        # more efficient to filter only the ruptures that occur, i.e.
-        # to call sample_number_of_occurrences() *before* the filtering
-        for rup in sorted(ses_num_occ, key=operator.attrgetter('rup_no')):
-            # filtering ruptures
-            r_sites = filter_sites_by_distance_to_rupture(
-                rup, oq.maximum_distance, s_sites)
-            if r_sites is None:
-                # ignore ruptures which are far away
-                del ses_num_occ[rup]  # save memory
+            s_sites = src.filter_sites_by_distance_to_source(
+                oq.maximum_distance, sitecol)
+            if s_sites is None:
                 continue
-            indices = r_sites.indices if len(r_sites) < len(sitecol) \
-                else None  # None means that nothing was filtered
 
-            # creating SESRuptures
-            for ses_idx, num_occurrences in ses_num_occ[rup]:
-                for occ_no in range(1, num_occurrences + 1):
-                    seed = rnd.randint(0, MAX_INT)
-                    tag = 'trt=%02d|ses=%04d|src=%s|rup=%03d-%02d' % (
-                        trt_model_id, ses_idx, src.source_id, rup.rup_no,
-                        occ_no)
-                    sesruptures.append(
-                        SESRupture(rup, indices, seed, tag, trt_model_id))
+            # the dictionary `ses_num_occ` contains [(ses, num_occurrences)]
+            # for each occurring rupture for each ses in the ses collection
+            ses_num_occ = collections.defaultdict(list)
+            # generating ruptures for the given source
+            for rup_no, rup in enumerate(src.iter_ruptures(), 1):
+                rup.rup_no = rup_no
+                for ses_idx in all_ses:
+                    numpy.random.seed(rnd.randint(0, MAX_INT))
+                    num_occurrences = rup.sample_number_of_occurrences()
+                    if num_occurrences:
+                        ses_num_occ[rup].append((ses_idx, num_occurrences))
 
-    return {trt_model_id: sesruptures}
+            # NB: the number of occurrences is very low, << 1, so it is
+            # more efficient to filter only the ruptures that occur, i.e.
+            # to call sample_number_of_occurrences() *before* the filtering
+            for rup in sorted(ses_num_occ, key=operator.attrgetter('rup_no')):
+                # filtering ruptures
+                r_sites = filter_sites_by_distance_to_rupture(
+                    rup, oq.maximum_distance, s_sites)
+                if r_sites is None:
+                    # ignore ruptures which are far away
+                    del ses_num_occ[rup]  # save memory
+                    continue
+                indices = r_sites.indices if len(r_sites) < len(sitecol) \
+                    else None  # None means that nothing was filtered
+
+                # creating SESRuptures
+                for ses_idx, num_occurrences in ses_num_occ[rup]:
+                    for occ_no in range(1, num_occurrences + 1):
+                        seed = rnd.randint(0, MAX_INT)
+                        tag = 'trt=%02d|ses=%04d|src=%s|rup=%03d-%02d' % (
+                            trt_model_id, ses_idx, src.source_id, rup.rup_no,
+                            occ_no)
+                        sr = SESRupture(rup, indices, seed, tag, trt_model_id)
+                        sesruptures += {(trt_model_id, idx): [sr]}
+
+    return sesruptures
 
 
 @base.calculators.add('event_based_rupture')
@@ -126,8 +129,13 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
         super(EventBasedRuptureCalculator, self).pre_execute()
         rnd = random.Random()
         rnd.seed(self.oqparam.random_seed)
-        for src in self.composite_source_model.sources:
-            src.seed = rnd.randint(0, MAX_INT)
+        for smodel in self.composite_source_model:
+            for trt_model in smodel.trt_models:
+                for src in trt_model.sources:
+                    seeds = []
+                    for _ in range(smodel.samples):
+                        seeds.append(rnd.randint(0, MAX_INT))
+                    src.seed = numpy.array(seeds)
 
     def execute(self):
         """
@@ -296,6 +304,8 @@ class EventBasedCalculator(base.calculators['classical']):
         """
         Return a dictionary with the output files, i.e. gmfs (if any)
         and hazard curves (if any).
+
+        :param result: a dictionary (trt_id, gsim) -> IMT -> curves
         """
         if getattr(self.oqparam, 'hazard_curves_from_gmfs', None):
             return self.saved + ClassicalCalculator.post_execute.__func__(

@@ -379,18 +379,18 @@ class CompositeSourceModel(collections.Sequence):
         num_samples = self.source_model_lt.num_samples
         idx = 0
         for smodel in self.source_models:
-            # count the number of ruptures per tectonic region type
-            trts = set()
-            for trt_model in smodel.trt_models:
-                if get_weight(trt_model) > 0:
-                    trts.add(trt_model.trt)
-            # recompute the GSIM logic tree if needed
-            if trts != set(smodel.gsim_lt.tectonic_region_types):
-                smodel.gsim_lt.reduce(trts)
             if num_samples:  # sampling
                 rnd = random.Random(random_seed + idx)
                 rlzs = logictree.sample(smodel.gsim_lt, smodel.samples, rnd)
             else:  # full enumeration
+                # count the number of ruptures per tectonic region type
+                trts = set()
+                for trt_model in smodel.trt_models:
+                    if get_weight(trt_model) > 0:
+                        trts.add(trt_model.trt)
+                # recompute the GSIM logic tree if needed
+                if trts != set(smodel.gsim_lt.tectonic_region_types):
+                    smodel.gsim_lt.reduce(trts)
                 rlzs = logictree.get_effective_rlzs(smodel.gsim_lt)
             if rlzs:
                 logging.info('Creating %d realization(s) for model '
