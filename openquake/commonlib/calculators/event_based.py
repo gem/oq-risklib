@@ -157,7 +157,7 @@ class SESRupture(object):
 def get_ses_idx(sesrupture):
     """
     Extract the SES ordinal (>=1) from the rupture tag.
-    For instance 'trt=00|ses=0001|src=1|rup=001-01' => 1
+    For instance 'col=00|ses=0001|src=1|rup=001-01' => 1
     """
     return int(sesrupture.tag.split('|', 2)[1].split('=')[1])
 
@@ -291,13 +291,15 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
         for smodel in self.composite_source_model:
             smpath = '_'.join(smodel.path)
             for trt_model in smodel.trt_models:
-                sesruptures = result.get(trt_model.id, [])
-                ses_coll = SESCollection(
-                    groupby(sesruptures, get_ses_idx),
-                    smodel.path, oq.investigation_time)
-                fname = 'ses-%d-smltp_%s.xml' % (
-                    trt_model.id, smpath)
-                saved += export(('ses', 'xml'), oq.export_dir, fname, ses_coll)
+                for idx in range(smodel.samples):
+                    sc_id = self.sc_dict[trt_model.id, idx]
+                    sesruptures = result.get(sc_id, [])
+                    ses_coll = SESCollection(
+                        groupby(sesruptures, get_ses_idx),
+                        smodel.path, oq.investigation_time)
+                    fname = 'ses-%d-smltp_%s.xml' % (sc_id, smpath)
+                    saved += export(
+                        ('ses', 'xml'), oq.export_dir, fname, ses_coll)
         return saved
 
 
