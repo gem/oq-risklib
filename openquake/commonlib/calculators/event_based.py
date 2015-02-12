@@ -73,7 +73,7 @@ def compute_ruptures(sources, sitecol, sc_dict, monitor):
 
         # `ses_num_occ` is of kind rup -> ses_id -> num_occurrences
         # for each occurring rupture for each ses in the ses collection
-        ses_num_occ = AccumDict()
+        ses_num_occ = {}
         ruptures_per_src = []
         for i, rup in enumerate(src.iter_ruptures(), 1):
             rup.rup_no = i
