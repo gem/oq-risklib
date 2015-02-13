@@ -21,6 +21,8 @@ import operator
 import collections
 from functools import partial
 
+import numpy
+
 from openquake.hazardlib.site import SiteCollection
 from openquake.hazardlib.calc.hazard_curve import calc_hazard_curves
 from openquake.hazardlib.calc.filters import source_site_distance_filter, \
@@ -101,14 +103,14 @@ class ClassicalCalculator(base.HazardCalculator):
         :param result:
             a nested dictionary (trt_id, gsim) -> IMT -> hazard curves
         """
-        for key, curves_by_imt in result.iteritems():
-            # safety check: this should never happen
-            assert curves_by_imt, (
-                'There are no curves for the key %s' % str(key))
-        curves_by_rlz = self.rlzs_assoc.combine(result)
-        rlzs = self.rlzs_assoc.realizations
         oq = self.oqparam
         nsites = len(self.sitecol)
+        for key in result:
+            if not result[key]:  # no hazard curves where generated
+                result[key].update((imt, numpy.zeros((nsites, len(imls))))
+                                   for imt, imls in oq.imtls.iteritems())
+        curves_by_rlz = self.rlzs_assoc.combine(result)
+        rlzs = self.rlzs_assoc.realizations
 
         # export curves
         saved = AccumDict()
