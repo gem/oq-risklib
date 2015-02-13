@@ -368,14 +368,15 @@ def get_source_models(oqparam, source_model_lt, sitecol=None):
         oqparam.complex_fault_mesh_spacing,
         oqparam.width_of_mfd_bin,
         getattr(oqparam, 'area_source_discretization', None))
-    samples_by_lt_path = source_model_lt.samples_by_lt_path()
 
-    for i, rlz in enumerate(source_model_lt):
+    rlzs = logictree.get_effective_rlzs(source_model_lt)
+    samples_by_lt_path = source_model_lt.samples_by_lt_path()
+    for i, rlz in enumerate(rlzs):
         sm = rlz.value  # name of the source model
         smpath = rlz.lt_path
         num_samples = samples_by_lt_path[smpath]
         if num_samples > 1:
-            logging.warn('The logic tree path %s was sampled %d times',
+            logging.warn('The source path %s was sampled %d times',
                          smpath, num_samples)
         fname = possibly_gunzip(os.path.join(oqparam.base_path, sm))
         apply_unc = source_model_lt.make_apply_uncertainties(smpath)
@@ -404,10 +405,10 @@ python -m openquake.engine.tools.correct_complex_sources %s
                         "Found in %r a tectonic region type %r inconsistent "
                         "with the ones in %r" % (sm, trt_model.trt, fname))
                 trt_model.gsims = gsim_lt.values[trt_model.trt]
-        # the num_ruptures is not updated; it will be updated in the
-        # engine, after filtering of the sources
+
+        weight = rlz.weight / num_samples
         yield source.SourceModel(
-            sm, rlz.weight, smpath, trt_models, gsim_lt, i)
+            sm, weight, smpath, trt_models, gsim_lt, i, num_samples)
 
 
 def get_filtered_source_models(oqparam, source_model_lt, sitecol):
@@ -495,7 +496,8 @@ def get_job_info(oqparam, source_models, sitecol):
     # The input weight is given by the number of ruptures generated
     # by the sources; for point sources however a corrective factor
     # given by the parameter `point_source_weight` is applied
-    input_weight = sum(src.weight or 0 for src_model in source_models
+    input_weight = sum((src.weight or 0) * src_model.samples
+                       for src_model in source_models
                        for trt_model in src_model.trt_models
                        for src in trt_model)
 

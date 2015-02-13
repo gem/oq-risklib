@@ -29,6 +29,8 @@ class DifferentFiles(Exception):
 
 
 class CalculatorTestCase(unittest.TestCase):
+    # if the numbers in a test change for a good reason, change this
+    # to overwrite the expected files
     OVERWRITE_EXPECTED = False
 
     def get_calc(self, testfile, job_ini):

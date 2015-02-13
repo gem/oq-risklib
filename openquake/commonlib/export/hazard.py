@@ -227,6 +227,8 @@ def export_hazard_curves_csv(key, export_dir, fname, sitecol, curves_by_imt,
     :param fname: name of the exported file
     :param sitecol: site collection
     :param curves_by_imt: dictionary with the curves keyed by IMT
+    :param imtls: ordered sequence of IMTs
+    :param investigation_time: investigation time
     """
     dest = os.path.join(export_dir, fname)
     nsites = len(sitecol)
@@ -235,7 +237,7 @@ def export_hazard_curves_csv(key, export_dir, fname, sitecol, curves_by_imt,
     rows = numpy.empty((nsites, len(imtls) + 1), dtype=object)
     for sid, lon, lat in zip(range(nsites), sitecol.lons, sitecol.lats):
         rows[sid, 0] = '%s %s' % (lon, lat)
-    for i, imt in enumerate(sorted(curves_by_imt), 1):
+    for i, imt in enumerate(imtls, 1):
         for sid, curve in zip(range(nsites), curves_by_imt[imt]):
             rows[sid, i] = scientificformat(curve)
     save_csv(dest, rows)
