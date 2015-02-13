@@ -403,9 +403,9 @@ class CompositeSourceModel(collections.Sequence):
         """
         Return a string representation of the composite model
         """
-        models = ['%d-%s-%s,w=%s [%d trt_model(s)]' % (
+        models = ['%d-%s,%s,w=%s,s=%d [%d trt_model(s)]' % (
             sm.ordinal, sm.name, '_'.join(sm.path), sm.weight,
-            len(sm.trt_models)) for sm in self]
+            sm.samples, len(sm.trt_models)) for sm in self]
         return '<%s\n%s>' % (self.__class__.__name__, '\n'.join(models))
 
     def __getitem__(self, i):
