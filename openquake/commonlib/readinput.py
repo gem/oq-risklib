@@ -458,12 +458,15 @@ def get_filtered_source_models(oqparam, source_model_lt, sitecol,
         an iterator over :class:`openquake.commonlib.source.SourceModel`
         tuples skipping the empty models
     """
+    #sites_polygon = sitecol.mesh.get_convex_hull()._polygon2d
+    sites_polygon = geometry.MultiPoint(
+        zip(sitecol.mesh.lons, sitecol.mesh.lats))
     for source_model in get_source_models(
             oqparam, source_model_lt, in_memory=in_memory):
         for trt_model in list(source_model.trt_models):
             num_original_sources = len(trt_model)
             trt_model.sources = sourceconverter.filter_sources(
-                trt_model, sitecol, oqparam.maximum_distance)
+                trt_model, sites_polygon, oqparam.maximum_distance)
             if num_original_sources > 1:
                 logging.info(
                     'Considering %d of %d sources for model %s%s, TRT=%s',

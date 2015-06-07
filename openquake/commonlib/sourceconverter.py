@@ -22,14 +22,11 @@ from openquake.hazardlib import geo, mfd, pmf, source
 from openquake.hazardlib.tom import PoissonTOM
 from openquake.commonlib.node import context, striptag
 from openquake.commonlib import valid
-from openquake.commonlib import parallel
 
 # this must stay here for the nrml_converters: don't remove it!
 from openquake.commonlib.obsolete import NrmlHazardlibConverter
 
-# the following is arbitrary, it is used to decide when to parallelize
-# the filtering (MS)
-LOTS_OF_SOURCES_SITES = 1E5  # arbitrary, set by Michele Simionato
+
 MAGNITUDE_FOR_RUPTURE_SPLITTING = 6.5  # given by Marco Pagani
 # NB: the parameter MAGNITUDE_FOR_RUPTURE_SPLITTING cannot go in a
 # configuration file, otherwise the tests will break by changing it;
@@ -638,33 +635,14 @@ def parse_ses_ruptures(fname):
     raise NotImplementedError('parse_ses_ruptures')
 
 
-@parallel.litetask
-def _filter_sources(sources, sitecol, maxdist, monitor):
-    # called by filter_sources
-    srcs = []
-    for src in sources:
-        sites = src.filter_sites_by_distance_to_source(maxdist, sitecol)
-        if sites is not None:
-            srcs.append(src)
-    return srcs
-
-
-def filter_sources(sources, sitecol, maxdist):
+def filter_sources(sources, sites_polygon, maxdist):
     """
     Filter a list of hazardlib sources according to the maximum distance.
 
     :param sources: the original sources
-    :param sitecol: a SiteCollection instance
+    :param sites_polygon: a shapely polygon enclosing the sites
     :param maxdist: maximum distance
     :returns: the filtered sources ordered by source_id
     """
-    mon = parallel.PerformanceMonitor('filter sources')
-    if len(sources) * len(sitecol) > LOTS_OF_SOURCES_SITES:
-        # filter in parallel on all available cores
-        sources = parallel.TaskManager.apply_reduce(
-            _filter_sources, (sources, sitecol, maxdist, mon),
-            operator.add, [])
-    else:
-        # few sources and sites, filter sequentially on a single core
-        sources = _filter_sources.task_func(sources, sitecol, maxdist, mon)
-    return sorted(sources, key=operator.attrgetter('source_id'))
+    srcs = (src for src in sources if src.is_within(maxdist, sites_polygon))
+    return sorted(srcs, key=operator.attrgetter('source_id'))
