@@ -1,31 +1,51 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <exposureModel id="ep" category="buildings">
-    <description>Exposure model for buildings</description>
-    <conversions>
-      <costTypes>
-        <costType name="structural" unit="USD" type="per_asset"/>
-      </costTypes>
-    </conversions>
-    <assets>
-      <asset id="a1" taxonomy="RM" number="3000">
-        <location lon="81.2985" lat="29.1098"/>
-        <costs>
-          <cost type="structural" value="1000"/>
-        </costs>
-      </asset>
-      <asset id="a2" taxonomy="RC" number="1000">
-        <location lon="83.082298" lat="27.9006"/>
-        <costs>
-          <cost type="structural" value="500"/>
-        </costs>
-      </asset>
-      <asset id="a3" taxonomy="W" number="2000">
-        <location lon="85.747703" lat="27.9015"/>
-        <costs>
-          <cost type="structural" value="1000"/>
-        </costs>
-      </asset>
-    </assets>
-  </exposureModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <exposureModel
+    category="buildings"
+    id="ep"
+    >
+        <description>
+            Exposure model for buildings
+        </description>
+        <conversions>
+            <costTypes>
+                <costType name="structural" type="per_asset" unit="USD"/>
+            </costTypes>
+        </conversions>
+        <assets>
+            <asset
+            id="a1"
+            number="3000.0"
+            taxonomy="RM"
+            >
+                <location lat="29.1098" lon="81.2985"/>
+                <costs>
+                    <cost type="structural" value="1000.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a2"
+            number="1000.0"
+            taxonomy="RC"
+            >
+                <location lat="27.9006" lon="83.082298"/>
+                <costs>
+                    <cost type="structural" value="500.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a3"
+            number="2000.0"
+            taxonomy="W"
+            >
+                <location lat="27.9015" lon="85.747703"/>
+                <costs>
+                    <cost type="structural" value="1000.0"/>
+                </costs>
+            </asset>
+        </assets>
+    </exposureModel>
 </nrml>

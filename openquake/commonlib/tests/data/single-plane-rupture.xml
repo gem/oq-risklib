@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.5">
   <singlePlaneRupture probs_occur="0.544 0.456">
     <magnitude>8.3</magnitude>
     <rake>90</rake>

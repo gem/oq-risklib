@@ -1,18 +1,36 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <hazardCurves sourceModelTreePath="source_model_2" gsimTreePath="BooreAtkinson2008_*" IMT="PGA" investigationTime="1.0">
-    <IMLs>5.000000000E-03 7.000000000E-03 9.800000000E-03 1.370000000E-02 1.920000000E-02 2.690000000E-02 3.760000000E-02 5.270000000E-02 7.380000000E-02 1.030000000E-01 1.450000000E-01 2.030000000E-01 2.840000000E-01 3.970000000E-01 5.560000000E-01 7.780000000E-01 1.090000000E+00 1.520000000E+00 2.130000000E+00</IMLs>
-    <hazardCurve>
-      <gml:Point>
-        <gml:pos>0.0 0.0</gml:pos>
-      </gml:Point>
-      <poEs>9.133784609E-02 8.931696164E-02 8.505022417E-02 7.793112841E-02 6.805590313E-02 5.652639412E-02 4.482570122E-02 3.399755589E-02 2.491175271E-02 1.780710469E-02 1.223575534E-02 8.037814583E-03 4.829797227E-03 2.533662223E-03 1.102173894E-03 3.828183695E-04 9.885293871E-05 1.686548720E-05 1.128948576E-06</poEs>
-    </hazardCurve>
-    <hazardCurve>
-      <gml:Point>
-        <gml:pos>-3.0 -3.0</gml:pos>
-      </gml:Point>
-      <poEs>0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00 0.000000000E+00</poEs>
-    </hazardCurve>
-  </hazardCurves>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <hazardCurves
+    IMT="PGA"
+    gsimTreePath="BooreAtkinson2008 *"
+    investigationTime="1.0"
+    sourceModelTreePath="source model 2"
+    >
+        <IMLs>
+            0.005 0.007 0.0098 0.0137 0.0192 0.0269 0.0376 0.0527 0.0738 0.103 0.145 0.203 0.284 0.397 0.556 0.778 1.09 1.52 2.13
+        </IMLs>
+        <hazardCurve>
+            <gml:Point>
+                <gml:pos>
+                    0.0 0.0
+                </gml:pos>
+            </gml:Point>
+            <poEs>
+                0.09133784609 0.08931696164 0.08505022417 0.07793112841 0.06805590313 0.05652639412 0.04482570122 0.03399755589 0.02491175271 0.01780710469 0.01223575534 0.008037814583 0.004829797227 0.002533662223 0.001102173894 0.0003828183695 9.885293871e-05 1.68654872e-05 1.128948576e-06
+            </poEs>
+        </hazardCurve>
+        <hazardCurve>
+            <gml:Point>
+                <gml:pos>
+                    -3.0 -3.0
+                </gml:pos>
+            </gml:Point>
+            <poEs>
+                0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+            </poEs>
+        </hazardCurve>
+    </hazardCurves>
 </nrml>

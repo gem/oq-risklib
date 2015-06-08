@@ -1,24 +1,71 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" 
- 	  xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <fragilityModel format="continuous">
-    <description>Fragility Functions for Case 6b</description>
-    <limitStates>slight moderate extreme complete</limitStates>
-    <ffs type="lognormal">
-	  <taxonomy>Wood</taxonomy>
-	  <IML IMT="PGA" imlUnit="g" minIML="0.05" maxIML="1.40"/>
-	  <ffc ls="slight">
-		<params mean="0.160" stddev="0.104"/>
-	  </ffc>
-	  <ffc ls="moderate">
-		<params mean="0.225" stddev="0.158"/>
-	  </ffc>
-	  <ffc ls="extreme">
-		<params mean="0.400" stddev="0.300"/>
-	  </ffc>
-	  <ffc ls="complete">
-		<params mean="0.600" stddev="0.480"/>
-	  </ffc>
-    </ffs>
-  </fragilityModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <fragilityModel
+    format="continuous"
+    >
+        <description>
+            Fragility Functions for Case 6b
+        </description>
+        <limitStates>
+            slight moderate extreme complete
+        </limitStates>
+        <ffs
+        type="lognormal"
+        >
+            <taxonomy>
+                Wood
+            </taxonomy>
+            <IML
+            IMT="PGA"
+            imlUnit="g"
+            maxIML="1.40"
+            minIML="0.05"
+            >
+                PGA None 0.05 1.4 g
+            </IML>
+            <ffc
+            ls="slight"
+            >
+                <params
+                mean="0.160"
+                stddev="0.104"
+                >
+                    0.16 0.104
+                </params>
+            </ffc>
+            <ffc
+            ls="moderate"
+            >
+                <params
+                mean="0.225"
+                stddev="0.158"
+                >
+                    0.225 0.158
+                </params>
+            </ffc>
+            <ffc
+            ls="extreme"
+            >
+                <params
+                mean="0.400"
+                stddev="0.300"
+                >
+                    0.4 0.3
+                </params>
+            </ffc>
+            <ffc
+            ls="complete"
+            >
+                <params
+                mean="0.600"
+                stddev="0.480"
+                >
+                    0.6 0.48
+                </params>
+            </ffc>
+        </ffs>
+    </fragilityModel>
 </nrml>

@@ -1,19 +1,30 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <exposureModel id="ep" category="single_asset">
-    <description>Test Exposure</description>
-    <conversions>
-      <costTypes>
-        <costType name="structural" unit="USD" type="aggregated" retrofittedType="aggregated" retrofittedUnit="USD"/>
-      </costTypes>
-    </conversions>
-    <assets>
-      <asset id="a1" taxonomy="VF">
-        <location lon="1" lat="1"/>
-        <costs>
-          <cost type="structural" value="2" retrofitted="0.1"/>
-        </costs>
-      </asset>
-    </assets>
-  </exposureModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <exposureModel
+    category="single_asset"
+    id="ep"
+    >
+        <description>
+            Test Exposure
+        </description>
+        <conversions>
+            <costTypes>
+                <costType name="structural" retrofittedType="aggregated" retrofittedUnit="USD" type="aggregated" unit="USD"/>
+            </costTypes>
+        </conversions>
+        <assets>
+            <asset
+            id="a1"
+            taxonomy="VF"
+            >
+                <location lat="1.0" lon="1.0"/>
+                <costs>
+                    <cost retrofitted="0.1" type="structural" value="2.0"/>
+                </costs>
+            </asset>
+        </assets>
+    </exposureModel>
 </nrml>

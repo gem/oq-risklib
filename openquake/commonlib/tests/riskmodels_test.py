@@ -28,32 +28,48 @@ class ParseVulnerabilityModelTestCase(unittest.TestCase):
         # the same IMT can appear with different levels in different
         # vulnerability functions
         vuln_content = StringIO.StringIO("""\
-<?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4"
-      xmlns:gml="http://www.opengis.net/gml">
-    <vulnerabilityModel>
-        <discreteVulnerabilitySet vulnerabilitySetID="PAGER"
-                                  assetCategory="population"
-                                  lossCategory="fatalities">
-            <IML IMT="PGA">0.005 0.007 0.0098 0.0137</IML>
-            <discreteVulnerability vulnerabilityFunctionID="RC/A"
-                                   probabilisticDistribution="LN">
-                <lossRatio>0.01 0.06 0.18 0.36</lossRatio>
-                <coefficientsVariation>0.30 0.30 0.30 0.30
-         </coefficientsVariation>
-            </discreteVulnerability>
-        </discreteVulnerabilitySet>
-        <discreteVulnerabilitySet vulnerabilitySetID="PAGER"
-                                  assetCategory="population"
-                                  lossCategory="fatalities">
-            <IML IMT="PGA">0.004 0.008 0.037</IML>
-            <discreteVulnerability vulnerabilityFunctionID="RC/B"
-                                   probabilisticDistribution="LN">
-                <lossRatio>0.01 0.06 0.18</lossRatio>
-                <coefficientsVariation>0.30 0.30 0.30
-         </coefficientsVariation>
-            </discreteVulnerability>
-        </discreteVulnerabilitySet>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <vulnerabilityModel
+    assetCategory="population"
+    id="PAGER"
+    lossCategory="fatalities"
+    >
+        <vulnerabilityFunction
+        dist="LN"
+        id="RC/B"
+        >
+            <imls
+            imt="PGA"
+            >
+                0.004 0.008 0.037
+            </imls>
+            <meanLRs>
+                0.01 0.06 0.18
+            </meanLRs>
+            <covLRs>
+                0.3 0.3 0.3
+            </covLRs>
+        </vulnerabilityFunction>
+        <vulnerabilityFunction
+        dist="LN"
+        id="RC/A"
+        >
+            <imls
+            imt="PGA"
+            >
+                0.005 0.007 0.0098 0.0137
+            </imls>
+            <meanLRs>
+                0.01 0.06 0.18 0.36
+            </meanLRs>
+            <covLRs>
+                0.3 0.3 0.3 0.3
+            </covLRs>
+        </vulnerabilityFunction>
     </vulnerabilityModel>
 </nrml>
 """)
@@ -69,59 +85,86 @@ class ParseVulnerabilityModelTestCase(unittest.TestCase):
         # In this test input, we've defined two functions in separate sets
         # with the same ID and different IMTs.
         vuln_content = StringIO.StringIO("""\
-<?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4"
-      xmlns:gml="http://www.opengis.net/gml">
-    <vulnerabilityModel>
-        <discreteVulnerabilitySet vulnerabilitySetID="PAGER"
-                                  assetCategory="population"
-                                  lossCategory="fatalities">
-            <IML IMT="PGA">0.005 0.007 0.0098 0.0137</IML>
-            <discreteVulnerability vulnerabilityFunctionID="A"
-                                   probabilisticDistribution="LN">
-                <lossRatio>0.01 0.06 0.18 0.36</lossRatio>
-                <coefficientsVariation>0.30 0.30 0.30 0.30
-         </coefficientsVariation>
-            </discreteVulnerability>
-        </discreteVulnerabilitySet>
-        <discreteVulnerabilitySet vulnerabilitySetID="PAGER"
-                                  assetCategory="population"
-                                  lossCategory="fatalities">
-            <IML IMT="MMI">0.005 0.007 0.0098 0.0137</IML>
-            <discreteVulnerability vulnerabilityFunctionID="A"
-                                   probabilisticDistribution="LN">
-                <lossRatio>0.01 0.06 0.18 0.36</lossRatio>
-                <coefficientsVariation>0.30 0.30 0.30 0.30
-                </coefficientsVariation>
-            </discreteVulnerability>
-        </discreteVulnerabilitySet>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <vulnerabilityModel
+    assetCategory="population"
+    id="PAGER"
+    lossCategory="fatalities"
+    >
+        <vulnerabilityFunction
+        dist="LN"
+        id="RC/B"
+        >
+            <imls
+            imt="PGA"
+            >
+                0.004 0.008 0.037
+            </imls>
+            <meanLRs>
+                0.01 0.06 0.18
+            </meanLRs>
+            <covLRs>
+                0.3 0.3 0.3
+            </covLRs>
+        </vulnerabilityFunction>
+        <vulnerabilityFunction
+        dist="LN"
+        id="RC/B"
+        >
+            <imls
+            imt="PGA"
+            >
+                0.005 0.007 0.0098 0.0137
+            </imls>
+            <meanLRs>
+                0.01 0.06 0.18 0.36
+            </meanLRs>
+            <covLRs>
+                0.3 0.3 0.3 0.3
+            </covLRs>
+        </vulnerabilityFunction>
     </vulnerabilityModel>
 </nrml>
 """)
         with self.assertRaises(InvalidFile) as ar:
             get_vulnerability_functions(vuln_content)
-        self.assertIn('Duplicated vulnerabilityFunctionID: A',
+        self.assertIn('Duplicated vulnerabilityFunctionID: RC/B',
                       ar.exception.message)
 
     def test_lr_eq_0_cov_gt_0(self):
         # If a vulnerability function loss ratio is 0 and its corresponding CoV
         # is > 0, a ValueError should be raised
         vuln_content = StringIO.StringIO("""\
-<?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4"
-      xmlns:gml="http://www.opengis.net/gml">
-    <vulnerabilityModel>
-        <discreteVulnerabilitySet vulnerabilitySetID="PAGER"
-                                  assetCategory="population"
-                                  lossCategory="fatalities">
-            <IML IMT="PGV">0.005 0.007 0.0098 0.0137</IML>
-            <discreteVulnerability vulnerabilityFunctionID="A"
-                                   probabilisticDistribution="LN">
-                <lossRatio>0.00 0.06 0.18 0.36</lossRatio>
-                <coefficientsVariation>0.30 0.30 0.30 0.30
-                </coefficientsVariation>
-            </discreteVulnerability>
-        </discreteVulnerabilitySet>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <vulnerabilityModel
+    assetCategory="population"
+    id="PAGER"
+    lossCategory="fatalities"
+    >
+        <vulnerabilityFunction
+        dist="LN"
+        id="RC/B"
+        >
+            <imls
+            imt="PGA"
+            >
+                0.004 0.008 0.037
+            </imls>
+            <meanLRs>
+                0.00 0.06 0.18
+            </meanLRs>
+            <covLRs>
+                0.3 0.3 0.3
+            </covLRs>
+        </vulnerabilityFunction>
     </vulnerabilityModel>
 </nrml>
 """)
@@ -135,7 +178,7 @@ class ParseVulnerabilityModelTestCase(unittest.TestCase):
         vuln_content = StringIO.StringIO("""\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
      <fragilityModel format="continuous">
         <description>Fragility for test</description>
         <limitStates>LS1 LS2</limitStates>
@@ -160,7 +203,7 @@ class ParseVulnerabilityModelTestCase(unittest.TestCase):
         vuln_content = StringIO.StringIO("""\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
      <fragilityModel format="continuous">
         <description>Fragility for test</description>
         <limitStates>LS1 LS2</limitStates>

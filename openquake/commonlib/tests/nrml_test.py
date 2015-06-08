@@ -9,7 +9,7 @@ class NrmlTestCase(unittest.TestCase):
         # can read and write a NRML file converted into a Node object
         xmlfile = cStringIO.StringIO("""\
 <?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4"
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.5"
       xmlns:gml="http://www.opengis.net/gml">
   <exposureModel
       id="my_exposure_model_for_population"
@@ -38,7 +38,7 @@ class NrmlTestCase(unittest.TestCase):
         self.assertEqual(outfile.getvalue(), """\
 <?xml version="1.0" encoding="utf-8"?>
 <nrml
-xmlns="http://openquake.org/xmlns/nrml/0.4"
+xmlns="http://openquake.org/xmlns/nrml/0.5"
 xmlns:gml="http://www.opengis.net/gml"
 >
     <exposureModel

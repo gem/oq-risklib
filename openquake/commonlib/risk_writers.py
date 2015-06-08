@@ -1056,6 +1056,6 @@ class DamageWriter(object):
         """
         fname = fname or writetmp()
         node = getattr(self, key + '_node')(data)
-        with open(fname, 'w') as out, writers.floatformat(fmt):
-            nrml.write([node], out)
+        with open(fname, 'w') as out:
+            nrml.write([node], out, fmt)
         return fname

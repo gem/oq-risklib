@@ -32,7 +32,7 @@ validated as soon as opened.
 For instance an exposure file like the following::
 
   <?xml version='1.0' encoding='utf-8'?>
-  <nrml xmlns="http://openquake.org/xmlns/nrml/0.4"
+  <nrml xmlns="http://openquake.org/xmlns/nrml/0.5"
         xmlns:gml="http://www.opengis.net/gml">
     <exposureModel
         id="my_exposure_model_for_population"
@@ -76,12 +76,13 @@ supplemented by a dictionary of validators.
 """
 
 import sys
+import logging
 from openquake.baselib.general import CallableDict
-from openquake.commonlib import valid
+from openquake.commonlib import valid, writers
 from openquake.commonlib.node import node_to_xml, \
     Node, LiteralNode, node_from_elem, striptag, parse, iterparse
 
-NAMESPACE = 'http://openquake.org/xmlns/nrml/0.4'
+NAMESPACE = 'http://openquake.org/xmlns/nrml/0.5'
 GML_NAMESPACE = 'http://www.opengis.net/gml'
 SERIALIZE_NS_MAP = {None: NAMESPACE, 'gml': GML_NAMESPACE}
 PARSE_NS_MAP = {'nrml': NAMESPACE, 'gml': GML_NAMESPACE}
@@ -198,9 +199,13 @@ class VulnerabilityNode(LiteralNode):
         # in the exposure model and it is not used by the engine
         lossCategory=valid.utf8,  # a description field
         IML=valid.IML,
-        lossRatio=valid.positivefloats,
-        coefficientsVariation=valid.positivefloats,
+        lossRatio=valid.positivefloats,  # obsolete
+        coefficientsVariation=valid.positivefloats,  # obsolete
         probabilisticDistribution=valid.Choice('LN', 'BT'),
+        dist=valid.Choice('LN', 'BT', 'PM'),
+        imls=lambda text, imt: valid.positivefloats(text),
+        meanLRs=valid.positivefloats,
+        covLRs=valid.positivefloats,
     )
 
 
@@ -305,16 +310,21 @@ nodefactory.add(
     )(LiteralNode)
 
 
-def read(source):
+def read(source, chatty=True):
     """
     Convert a NRML file into a validated LiteralNode object. Keeps
     the entire tree in memory.
 
     :param source:
         a file name or file object open for reading
+    :param chatty:
+        log a warning when reading an obsolete format
     """
     nrml = parse(source).getroot()
     assert striptag(nrml.tag) == 'nrml', nrml.tag
+    xmlns = nrml.tag.split('}')[0][1:]
+    if xmlns != NAMESPACE and chatty:
+        logging.warn('%s is at an outdated version: %s' % (source, xmlns))
     subnodes = []
     for elem in nrml:
         nodecls = nodefactory[striptag(elem.tag)]
@@ -353,7 +363,7 @@ def read_lazy(source, lazytags):
     return nodes
 
 
-def write(nodes, output=sys.stdout):
+def write(nodes, output=sys.stdout, fmt='%s'):
     """
     Convert nodes into a NRML file. output must be a file
     object open in write mode. If you want to perform a
@@ -364,7 +374,8 @@ def write(nodes, output=sys.stdout):
     :params output: a file-like object in write or read-write mode
     """
     root = Node('nrml', nodes=nodes)
-    node_to_xml(root, output, {NAMESPACE: '', GML_NAMESPACE: 'gml:'})
+    with writers.floatformat(fmt):
+        node_to_xml(root, output, {NAMESPACE: '', GML_NAMESPACE: 'gml:'})
     if hasattr(output, 'mode') and '+' in output.mode:  # read-write mode
         output.seek(0)
         read(output)  # validate the written file

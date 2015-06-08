@@ -157,7 +157,7 @@ investigation_time = 50.
         two_trts = general.writetmp("""\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <logicTree logicTreeID='lt1'>
         <logicTreeBranchingLevel branchingLevelID="bl1">
             <logicTreeBranchSet uncertaintyType="gmpeModel" branchSetID="bs1"
@@ -207,7 +207,7 @@ class ClosestSiteModelTestCase(unittest.TestCase):
         data = StringIO('''\
 <?xml version="1.0" encoding="utf-8"?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <siteModel>
         <site lon="0.0" lat="0.0" vs30="1200.0" vs30Type="inferred" z1pt0="100.0" z2pt5="2.0" backarc="False" />
         <site lon="0.0" lat="0.1" vs30="600.0" vs30Type="inferred" z1pt0="100.0" z2pt5="2.0" backarc="True" />
@@ -229,7 +229,7 @@ class ClosestSiteModelTestCase(unittest.TestCase):
 class ExposureTestCase(unittest.TestCase):
     exposure = general.writetmp('''\
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.5">
   <exposureModel id="ep" category="buildings">
     <description>Exposure model for buildings</description>
     <conversions>
@@ -262,7 +262,7 @@ class ExposureTestCase(unittest.TestCase):
 
     exposure0 = general.writetmp('''\
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.5">
   <exposureModel id="ep" category="buildings">
     <description>Exposure model for buildings</description>
     <conversions>

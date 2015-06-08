@@ -36,7 +36,7 @@ class ExposureModelParserTestCase(unittest.TestCase):
         invalid_exposure = """\
 <?xml version='1.0' encoding='utf-8'?>
   <nrml xmlns:gml="http://www.opengis.net/gml"
-    xmlns="http://openquake.org/xmlns/nrml/0.4">
+    xmlns="http://openquake.org/xmlns/nrml/0.5">
     <exposureModel id="ep1"/>
 </nrml>
 """
@@ -47,7 +47,7 @@ class ExposureModelParserTestCase(unittest.TestCase):
     def test_parsing(self):
         exposure = """\
 <?xml version='1.0' encoding='utf-8'?>
-  <nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+  <nrml xmlns="http://openquake.org/xmlns/nrml/0.5">
 
   <exposureModel id="ep1"
                  category="buildings"

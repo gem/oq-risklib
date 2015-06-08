@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <uniformHazardSpectra sourceModelTreePath="b1_b2_b4" gsimTreePath="b1_b2" investigationTime="50.0" poE="0.1">
         <periods>0.0 0.025 0.1 0.2</periods>
         <uhs>

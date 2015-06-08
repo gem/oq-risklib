@@ -384,7 +384,7 @@ class NrmlSourceToHazardlibTestCase(unittest.TestCase):
         area_file = StringIO("""\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <sourceModel name="Some Source Model">
         <areaSource id="1" name="Quito" tectonicRegion="Active Shallow Crust">
             <areaGeometry>
@@ -433,7 +433,7 @@ class NrmlSourceToHazardlibTestCase(unittest.TestCase):
         area_file = StringIO("""\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <sourceModel name="Some Source Model">
         <areaSource id="1" name="Quito" tectonicRegion="Active Shallow Crust">
             <areaGeometry>
@@ -707,7 +707,7 @@ class RuptureConverterTestCase(unittest.TestCase):
         rup_file = StringIO('''\
 <?xml version='1.0' encoding='utf-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
     <simpleFaultRupture>
         <magnitude>7.65</magnitude>
         <rake>15.0</rake>

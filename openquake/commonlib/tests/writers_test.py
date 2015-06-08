@@ -22,7 +22,7 @@ def assetgen(n):
 class StreamingXMLWriterTestCase(unittest.TestCase):
     def test_tostring(self):
         nrml = etree.Element(
-            'nrml', {'xmlns': 'http://openquake.org/xmlns/nrml/0.4'})
+            'nrml', {'xmlns': 'http://openquake.org/xmlns/nrml/0.5'})
         em = etree.SubElement(
             nrml, 'exposureModel',
             {'id': "my_exposure_model_for_population",
@@ -34,7 +34,7 @@ class StreamingXMLWriterTestCase(unittest.TestCase):
         etree.SubElement(em, 'assets')
         self.assertEqual(tostring(nrml), '''\
 <nrml
-xmlns="http://openquake.org/xmlns/nrml/0.4"
+xmlns="http://openquake.org/xmlns/nrml/0.5"
 >
     <exposureModel
     category="population"

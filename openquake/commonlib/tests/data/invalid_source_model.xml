@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <sourceModel>
     <areaSource id="246" name="BEAS158" tectonicRegion="Stable Shallow Crust">
       <areaGeometry>

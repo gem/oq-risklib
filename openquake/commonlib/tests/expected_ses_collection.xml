@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <stochasticEventSetCollection sourceModelTreePath="b8_b9_b10">
     <stochasticEventSet id="1" investigationTime="50.0">
       <rupture id="TAG" magnitude="5.5" strike="1.0" dip="40.0" rake="10.0" tectonicRegion="Active Shallow Crust">

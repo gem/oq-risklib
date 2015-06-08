@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
 
     <!-- Spectral Acceleration (SA) example -->
     <hazardCurves sourceModelTreePath="b1_b2_b4" gsimTreePath="b1_b2" investigationTime="50.0" IMT="SA" saPeriod="0.025" saDamping="5.0">

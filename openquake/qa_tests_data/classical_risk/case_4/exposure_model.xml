@@ -1,49 +1,81 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <exposureModel id="ep" category="buildings">
-    <description>Exposure model for buildings in Nepal</description>
-    <conversions>
-      <costTypes>
-        <costType name="structural" unit="USD" type="per_asset"/>
-      </costTypes>
-    </conversions>
-    <assets>
-      <asset id="a1" taxonomy="W" number="8766">
-        <location lon="81.2985" lat="29.1098"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-      <asset id="a2" taxonomy="W" number="8492">
-        <location lon="83.082298" lat="27.9006"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-      <asset id="a3" taxonomy="W" number="11154">
-        <location lon="83.250999" lat="28.340499"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-      <asset id="a4" taxonomy="A" number="8193">
-        <location lon="80.562103" lat="29.5104"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-      <asset id="a5" taxonomy="W" number="6125">
-        <location lon="81.1791" lat="29.7136"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-      <asset id="a6" taxonomy="W" number="4516">
-        <location lon="81.568496" lat="29.564199"/>
-        <costs>
-          <cost type="structural" value="11340"/>
-        </costs>
-      </asset>
-     </assets>
-  </exposureModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <exposureModel
+    category="buildings"
+    id="ep"
+    >
+        <description>
+            Exposure model for buildings in Nepal
+        </description>
+        <conversions>
+            <costTypes>
+                <costType name="structural" type="per_asset" unit="USD"/>
+            </costTypes>
+        </conversions>
+        <assets>
+            <asset
+            id="a1"
+            number="8766.0"
+            taxonomy="W"
+            >
+                <location lat="29.1098" lon="81.2985"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a2"
+            number="8492.0"
+            taxonomy="W"
+            >
+                <location lat="27.9006" lon="83.082298"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a3"
+            number="11154.0"
+            taxonomy="W"
+            >
+                <location lat="28.340499" lon="83.250999"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a4"
+            number="8193.0"
+            taxonomy="A"
+            >
+                <location lat="29.5104" lon="80.562103"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a5"
+            number="6125.0"
+            taxonomy="W"
+            >
+                <location lat="29.7136" lon="81.1791"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+            <asset
+            id="a6"
+            number="4516.0"
+            taxonomy="W"
+            >
+                <location lat="29.564199" lon="81.568496"/>
+                <costs>
+                    <cost type="structural" value="11340.0"/>
+                </costs>
+            </asset>
+        </assets>
+    </exposureModel>
 </nrml>

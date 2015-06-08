@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
 
     <!-- Basic example, using PGA as IMT -->
     <hazardCurves sourceModelTreePath="b1_b2_b3" gsimTreePath="b1_b7" investigationTime="50.0" IMT="PGA">

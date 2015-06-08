@@ -1,20 +1,31 @@
-<?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
     <simpleFaultRupture>
-        <magnitude>7.0</magnitude>
-        <rake>90.0</rake>
-        <hypocenter lat="0.0" lon="0.0" depth="10.0"/>
+        <magnitude>
+            7.0
+        </magnitude>
+        <rake>
+            90.0
+        </rake>
+        <hypocenter depth="10.0" lat="0.0" lon="0.0"/>
         <simpleFaultGeometry>
             <gml:LineString>
                 <gml:posList>
-                    0.0 -0.3
-                    0.0  0.3
+                    0.0 -0.3 0.0 0.3
                 </gml:posList>
             </gml:LineString>
-            <dip>90.0</dip>
-            <upperSeismoDepth>2.0</upperSeismoDepth>
-            <lowerSeismoDepth>20.0</lowerSeismoDepth>
+            <dip>
+                90.0
+            </dip>
+            <upperSeismoDepth>
+                2.0
+            </upperSeismoDepth>
+            <lowerSeismoDepth>
+                20.0
+            </lowerSeismoDepth>
         </simpleFaultGeometry>
     </simpleFaultRupture>
 </nrml>

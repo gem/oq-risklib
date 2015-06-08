@@ -1,41 +1,126 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" 
- 	  xmlns="http://openquake.org/xmlns/nrml/0.4">
-  <fragilityModel format="continuous">
-    <description>Fragility Functions for Case 3a</description>
-    <limitStates>slight moderate extreme complete</limitStates>
-    <ffs type="lognormal">
-	  <taxonomy>Wood</taxonomy>
-	  <IML IMT="PGA" imlUnit="g" minIML="0.05" maxIML="1.40"/>
-	  <ffc ls="slight">
-		<params mean="0.160" stddev="0.104"/>
-	  </ffc>
-	  <ffc ls="moderate">
-		<params mean="0.225" stddev="0.158"/>
-	  </ffc>
-	  <ffc ls="extreme">
-		<params mean="0.400" stddev="0.300"/>
-	  </ffc>
-	  <ffc ls="complete">
-		<params mean="0.600" stddev="0.480"/>
-	  </ffc>
-    </ffs>
-    
-    <ffs type="lognormal">
-	  <taxonomy>Steel</taxonomy>
-	  <IML IMT="PGA" imlUnit="g" minIML="0.05" maxIML="1.40"/>
-	  <ffc ls="slight">
-		<params mean="0.184" stddev="0.131"/>
-	  </ffc>
-	  <ffc ls="moderate">
-		<params mean="0.319" stddev="0.227"/>
-	  </ffc>
-	  <ffc ls="extreme">
-		<params mean="0.663" stddev="0.472"/>
-	  </ffc>
-	  <ffc ls="complete">
-		<params mean="1.227" stddev="0.873"/>
-	  </ffc>
-    </ffs>
-  </fragilityModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <fragilityModel
+    format="continuous"
+    >
+        <description>
+            Fragility Functions for Case 3a
+        </description>
+        <limitStates>
+            slight moderate extreme complete
+        </limitStates>
+        <ffs
+        type="lognormal"
+        >
+            <taxonomy>
+                Wood
+            </taxonomy>
+            <IML
+            IMT="PGA"
+            imlUnit="g"
+            maxIML="1.40"
+            minIML="0.05"
+            >
+                PGA None 0.05 1.4 g
+            </IML>
+            <ffc
+            ls="slight"
+            >
+                <params
+                mean="0.160"
+                stddev="0.104"
+                >
+                    0.16 0.104
+                </params>
+            </ffc>
+            <ffc
+            ls="moderate"
+            >
+                <params
+                mean="0.225"
+                stddev="0.158"
+                >
+                    0.225 0.158
+                </params>
+            </ffc>
+            <ffc
+            ls="extreme"
+            >
+                <params
+                mean="0.400"
+                stddev="0.300"
+                >
+                    0.4 0.3
+                </params>
+            </ffc>
+            <ffc
+            ls="complete"
+            >
+                <params
+                mean="0.600"
+                stddev="0.480"
+                >
+                    0.6 0.48
+                </params>
+            </ffc>
+        </ffs>
+        <ffs
+        type="lognormal"
+        >
+            <taxonomy>
+                Steel
+            </taxonomy>
+            <IML
+            IMT="PGA"
+            imlUnit="g"
+            maxIML="1.40"
+            minIML="0.05"
+            >
+                PGA None 0.05 1.4 g
+            </IML>
+            <ffc
+            ls="slight"
+            >
+                <params
+                mean="0.184"
+                stddev="0.131"
+                >
+                    0.184 0.131
+                </params>
+            </ffc>
+            <ffc
+            ls="moderate"
+            >
+                <params
+                mean="0.319"
+                stddev="0.227"
+                >
+                    0.319 0.227
+                </params>
+            </ffc>
+            <ffc
+            ls="extreme"
+            >
+                <params
+                mean="0.663"
+                stddev="0.472"
+                >
+                    0.663 0.472
+                </params>
+            </ffc>
+            <ffc
+            ls="complete"
+            >
+                <params
+                mean="1.227"
+                stddev="0.873"
+                >
+                    1.227 0.873
+                </params>
+            </ffc>
+        </ffs>
+    </fragilityModel>
 </nrml>

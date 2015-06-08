@@ -2,7 +2,7 @@
 <!-- GMF model for Event-Based calculator results.
      Note that the structure varies slightly in the Scenario calculator
      GMF results. -->
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.5">
     <gmfCollection sourceModelTreePath="b1|b2|b4" gsimTreePath="b1|b7">
         <gmfSet investigationTime="50.0" stochasticEventSetId="1">
             <gmf IMT="SA" saPeriod="0.025" saDamping="5.0" ruptureId="rlz=00|ses=0001|src=1|i=0">

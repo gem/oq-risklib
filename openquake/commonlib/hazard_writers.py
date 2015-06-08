@@ -400,7 +400,7 @@ class EventBasedGMFXMLWriter(object):
         gmf_container.nodes = gmf_set_nodes
 
         with open(self.dest, 'w') as dest:
-            nrml.write([gmf_container], dest)
+            nrml.write([gmf_container], dest, '%12.8E')
 
 
 def rupture_to_element(rupture, parent=None):

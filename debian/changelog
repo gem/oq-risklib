@@ -1,4 +1,6 @@
   [Michele Simionato]
+  * Upgraded the NRML format to 0.5 and added a migration command
+    $ oq-lite upgrade_nrml <directory>
   * Fixed a bug in apply_reduce when the first argument is a numpy array
   * Added a functionality `write_source_model` to serialize sources in XML
 

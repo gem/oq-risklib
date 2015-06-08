@@ -1,21 +1,31 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
-	<exposureModel id="exp1" category="buildings">
-		<description>
-			Exposure Model for Single Asset Tests
-		</description>
-		<conversions>
-			<costTypes>
-			  <costType name="structural" type="per_asset" unit="USD" />
-			</costTypes>
-		</conversions>
-		<assets>
-			<asset id="a1" number="1"  taxonomy="Steel" >
-				<location lon="-122.000" lat="38.113" />
-				<costs>
-					<cost type="structural" value="1" />
-				</costs>
-			</asset>
-		</assets>
-	</exposureModel>
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
+    <exposureModel
+    category="buildings"
+    id="exp1"
+    >
+        <description>
+            Exposure Model for Single Asset Tests
+        </description>
+        <conversions>
+            <costTypes>
+                <costType name="structural" type="per_asset" unit="USD"/>
+            </costTypes>
+        </conversions>
+        <assets>
+            <asset
+            id="a1"
+            number="1.0"
+            taxonomy="Steel"
+            >
+                <location lat="38.113" lon="-122.0"/>
+                <costs>
+                    <cost type="structural" value="1.0"/>
+                </costs>
+            </asset>
+        </assets>
+    </exposureModel>
 </nrml>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nrml
-xmlns="http://openquake.org/xmlns/nrml/0.4"
+xmlns="http://openquake.org/xmlns/nrml/0.5"
 xmlns:gml="http://www.opengis.net/gml"
 >
     <exposureModel
@@ -16,173 +16,181 @@ xmlns:gml="http://www.opengis.net/gml"
                 <costType name="nonstructural" type="per_asset" unit="USD"/>
                 <costType name="contents" type="per_asset" unit="USD"/>
             </costTypes>
-            <insuranceLimit isAbsolute="false"/>
-            <deductible isAbsolute="false"/>
+            <insuranceLimit
+            isAbsolute="false"
+            >
+                False
+            </insuranceLimit>
+            <deductible
+            isAbsolute="false"
+            >
+                False
+            </deductible>
         </conversions>
         <assets>
             <asset
             id="a125"
-            number="4.000000000E+00"
+            number="4.0"
             taxonomy="W"
             >
-                <location lat="2.893617200E+01" lon="8.346382300E+01"/>
+                <location lat="28.936172" lon="83.463823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="2.000000000E+01" period="night"/>
+                    <occupancy occupants="20.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a395"
-            number="1.800000000E+01"
+            number="18.0"
             taxonomy="W"
             >
-                <location lat="2.871117200E+01" lon="8.121382300E+01"/>
+                <location lat="28.711172" lon="81.213823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="8.800000000E+01" period="night"/>
+                    <occupancy occupants="88.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a2544"
-            number="2.900000000E+01"
+            number="29.0"
             taxonomy="A"
             >
-                <location lat="2.946117200E+01" lon="8.278882300E+01"/>
+                <location lat="29.461172" lon="82.788823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="1.420000000E+02" period="night"/>
+                    <occupancy occupants="142.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a2925"
-            number="1.300000000E+02"
+            number="130.0"
             taxonomy="A"
             >
-                <location lat="2.796117200E+01" lon="8.196382300E+01"/>
+                <location lat="27.961172" lon="81.963823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="6.340000000E+02" period="night"/>
+                    <occupancy occupants="634.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a3518"
-            number="5.930000000E+02"
+            number="593.0"
             taxonomy="A"
             >
-                <location lat="2.856117200E+01" lon="8.196382300E+01"/>
+                <location lat="28.561172" lon="81.963823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="2.894000000E+03" period="night"/>
+                    <occupancy occupants="2894.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a4102"
-            number="1.880000000E+03"
+            number="1880.0"
             taxonomy="A"
             >
-                <location lat="2.811117200E+01" lon="8.323882300E+01"/>
+                <location lat="28.111172" lon="83.238823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="9.174000000E+03" period="night"/>
+                    <occupancy occupants="9174.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a4351"
-            number="3.662000000E+03"
+            number="3662.0"
             taxonomy="A"
             >
-                <location lat="2.841117200E+01" lon="8.113882300E+01"/>
+                <location lat="28.411172" lon="81.138823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="1.787100000E+04" period="night"/>
+                    <occupancy occupants="17871.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a4498"
-            number="1.000000000E+00"
+            number="1.0"
             taxonomy="DS"
             >
-                <location lat="2.931117200E+01" lon="8.391382300E+01"/>
+                <location lat="29.311172" lon="83.913823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="5.000000000E+00" period="night"/>
+                    <occupancy occupants="5.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a5229"
-            number="4.400000000E+01"
+            number="44.0"
             taxonomy="DS"
             >
-                <location lat="2.743617200E+01" lon="8.758882300E+01"/>
+                <location lat="27.436172" lon="87.588823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="2.150000000E+02" period="night"/>
+                    <occupancy occupants="215.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a7180"
-            number="3.900000000E+01"
+            number="39.0"
             taxonomy="UFB"
             >
-                <location lat="2.998617200E+01" lon="8.121382300E+01"/>
+                <location lat="29.986172" lon="81.213823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="1.900000000E+02" period="night"/>
+                    <occupancy occupants="190.0" period="night"/>
                 </occupancies>
             </asset>
             <asset
             id="a8309"
-            number="7.150000000E+02"
+            number="715.0"
             taxonomy="UFB"
             >
-                <location lat="2.736117200E+01" lon="8.526382300E+01"/>
+                <location lat="27.361172" lon="85.263823"/>
                 <costs>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="structural" value="1.134000000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="nonstructural" value="1.984500000E+04"/>
-                    <cost deductible="1.000000000E-01" insuranceLimit="8.000000000E-01" type="contents" value="5.670000000E+03"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="structural" value="11340.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="nonstructural" value="19845.0"/>
+                    <cost deductible="0.1" insuranceLimit="0.8" type="contents" value="5670.0"/>
                 </costs>
                 <occupancies>
-                    <occupancy occupants="3.489000000E+03" period="night"/>
+                    <occupancy occupants="3489.0" period="night"/>
                 </occupancies>
             </asset>
         </assets>

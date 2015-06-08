@@ -20,16 +20,18 @@
 Reading risk models for risk calculators
 """
 import re
+import os.path
 import logging
 import collections
 
 import numpy
 
-from openquake.commonlib.node import read_nodes, context
-from openquake.commonlib import InvalidFile
+from openquake.commonlib.node import read_nodes, context, LiteralNode
+from openquake.commonlib import InvalidFile, nrml
 from openquake.risklib import scientific
 from openquake.baselib.general import AccumDict
 from openquake.commonlib.nrml import nodefactory
+from openquake.commonlib.sourcewriter import obj_to_node
 
 VULNERABILITY_KEY = re.compile('(structural|nonstructural|contents|'
                                'business_interruption|occupants)_([\w_]+)')
@@ -107,12 +109,20 @@ def get_vfs(inputs, retrofitted=False):
 ############################ vulnerability ##################################
 
 
-def filter_vset(elem):
-    return elem.tag.endswith('discreteVulnerabilitySet')
+@obj_to_node.add('VulnerabilityFunction')
+def build_vf_node(vf):
+    """
+    Convert a VulnerabilityFunction object into a LiteralNode suitable
+    for XML conversion.
+    """
+    nodes = [LiteralNode('imls', {'imt': vf.imt}, vf.imls),
+             LiteralNode('meanLRs', {}, vf.mean_loss_ratios),
+             LiteralNode('covLRs', {}, vf.covs)]
+    return LiteralNode(
+        'vulnerabilityFunction',
+        {'id': vf.id, 'dist': vf.distribution_name}, nodes=nodes)
 
 
-# this works only for discreteVulnerabilitySet, since there are no
-# continuousVulnerabilitySet
 def get_vulnerability_functions(fname):
     """
     :param fname:
@@ -120,41 +130,43 @@ def get_vulnerability_functions(fname):
     :returns:
         a dictionary imt, taxonomy -> vulnerability function
     """
-    # NB: the vulnerabilitySetID is not an unique ID!
-    # it is right to have several vulnerability sets with the same ID
-    # the IMTs can also be duplicated and with different levels, each
+    # NB: the IMTs can be duplicated and with different levels, each
     # vulnerability function in a set will get its own levels
     imts = set()
     taxonomies = set()
     vf_dict = {}  # imt, taxonomy -> vulnerability function
-    for vset in read_nodes(fname, filter_vset,
-                           nodefactory['vulnerabilityModel']):
-        imt_str, imls, min_iml, max_iml, imlUnit = ~vset.IML
-        imts.add(imt_str)
-        for vfun in vset.getnodes('discreteVulnerability'):
-            taxonomy = vfun['vulnerabilityFunctionID']
-            if taxonomy in taxonomies:
-                raise InvalidFile(
-                    'Duplicated vulnerabilityFunctionID: %s: %s, line %d' %
-                    (taxonomy, fname, vfun.lineno))
-            taxonomies.add(taxonomy)
-            with context(fname, vfun):
-                loss_ratios = ~vfun.lossRatio
-                coefficients = ~vfun.coefficientsVariation
-            if len(loss_ratios) != len(imls):
-                raise InvalidFile(
-                    'There are %d loss ratios, but %d imls: %s, line %d' %
-                    (len(loss_ratios), len(imls), fname,
-                     vfun.lossRatio.lineno))
-            if len(coefficients) != len(imls):
-                raise InvalidFile(
-                    'There are %d coefficients, but %d imls: %s, line %d' %
-                    (len(coefficients), len(imls), fname,
-                     vfun.coefficientsVariation.lineno))
-            with context(fname, vfun):
-                vf_dict[imt_str, taxonomy] = scientific.VulnerabilityFunction(
-                    taxonomy, imt_str, imls, loss_ratios, coefficients,
-                    vfun['probabilisticDistribution'])
+    node = nrml.read(fname)
+    if node['xmlns'] != nrml.NAMESPACE:
+        raise InvalidFile(
+            'run `oq-lite upgrade_nrml %s` to update all NRML files' %
+            os.path.dirname(fname))
+    vmodel = node[0]
+    for vfun in vmodel:
+        imt = vfun.imls['imt']
+        imts.add(imt)
+        taxonomy = vfun['id']
+        if taxonomy in taxonomies:
+            raise InvalidFile(
+                'Duplicated vulnerabilityFunctionID: %s: %s, line %d' %
+                (taxonomy, fname, vfun.lineno))
+        taxonomies.add(taxonomy)
+        with context(fname, vfun):
+            imls = ~vfun.imls
+            loss_ratios = ~vfun.meanLRs
+            coefficients = ~vfun.covLRs
+        if len(loss_ratios) != len(imls):
+            raise InvalidFile(
+                'There are %d loss ratios, but %d imls: %s, line %d' %
+                (len(loss_ratios), len(imls), fname,
+                 vfun.meanLRs.lineno))
+        if len(coefficients) != len(imls):
+            raise InvalidFile(
+                'There are %d coefficients, but %d imls: %s, line %d' %
+                (len(coefficients), len(imls), fname,
+                 vfun.covLRs.lineno))
+        with context(fname, vfun):
+            vf_dict[imt, taxonomy] = scientific.VulnerabilityFunction(
+                taxonomy, imt, imls, loss_ratios, coefficients, vfun['dist'])
     return vf_dict
 
 

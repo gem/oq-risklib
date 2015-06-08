@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <disaggMatrices sourceModelTreePath="b1_b2_b3" gsimTreePath="b1_b7_b15" IMT="SA" investigationTime="50.0" saPeriod="0.1" saDamping="5.0" lon="8.33" lat="47.22" magBinEdges="5, 6" distBinEdges="0, 20, 40" lonBinEdges="6, 7, 8, 9, 10" latBinEdges="46, 47, 48, 49, 50" epsBinEdges="-5.000000000E-01, 5.000000000E-01, 1.500000000E+00, 2.500000000E+00" tectonicRegionTypes="active shallow crust, stable continental">
     <disaggMatrix type="Mag" dims="2" poE="2.100000000E-02" iml="2.129000000E+00">
       <prob index="0" value="0.000000000E+00"/>

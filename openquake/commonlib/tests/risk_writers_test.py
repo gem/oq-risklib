@@ -91,7 +91,7 @@ class LossCurveXMLWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossCurves investigationTime="10.0"
               sourceModelTreePath="b1_b2_b3"
               gsimTreePath="b1_b2" unit="USD" lossType="structural">
@@ -141,7 +141,7 @@ class LossCurveXMLWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossCurves  insured="True" investigationTime="10.0"
     sourceModelTreePath="b1_b2_b3" gsimTreePath="b1_b2" unit="USD" lossType="structural">
     <lossCurve assetRef="asset_1">
@@ -192,7 +192,7 @@ class LossCurveXMLWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossCurves investigationTime="10.0"
               statistics="quantile" quantileValue="0.5" lossType="structural">
     <lossCurve assetRef="asset_1">
@@ -242,7 +242,7 @@ class AggregateLossCurveXMLWriterTestCase(unittest.TestCase):
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml
   xmlns:gml="http://www.opengis.net/gml"
-  xmlns="http://openquake.org/xmlns/nrml/0.4">
+  xmlns="http://openquake.org/xmlns/nrml/0.5">
   <aggregateLossCurve
     investigationTime="10.0"
     sourceModelTreePath="b1_b2_b3"
@@ -275,7 +275,7 @@ class AggregateLossCurveXMLWriterTestCase(unittest.TestCase):
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml
   xmlns:gml="http://www.opengis.net/gml"
-  xmlns="http://openquake.org/xmlns/nrml/0.4">
+  xmlns="http://openquake.org/xmlns/nrml/0.5">
   <aggregateLossCurve
     investigationTime="10.0"
     statistics="quantile"
@@ -344,7 +344,7 @@ class LossMapWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossMap investigationTime="10.0" poE="0.8" statistics="mean" lossType="structural">
     <node>
       <gml:Point>
@@ -407,7 +407,7 @@ class LossMapWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossMap investigationTime="10.0" poE="0.8" statistics="quantile"
         quantileValue="0.5" lossCategory="economic" unit="USD" lossType="structural">
     <node>
@@ -473,7 +473,7 @@ class LossMapWriterTestCase(unittest.TestCase):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
 <nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+      xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossMap investigationTime="10.0" poE="0.8"
            sourceModelTreePath="b1|b2" gsimTreePath="b3|b4"
            lossCategory="economic" unit="USD" lossType="structural">
@@ -596,7 +596,7 @@ class BCRMapXMLWriterTestCase(unittest.TestCase):
     def test_serialize_a_model(self):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <bcrMap interestRate="10.0" assetLifeExpectancy="50.0" statistics="mean" lossType="structural">
     <node>
       <gml:Point>
@@ -642,7 +642,7 @@ class BCRMapXMLWriterTestCase(unittest.TestCase):
     def test_serialize_optional_metadata(self):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <bcrMap interestRate="10.0" assetLifeExpectancy="50.0" statistics="quantile" quantileValue="0.5" lossCategory="economic" unit="USD" lossType="structural">
     <node>
       <gml:Point>
@@ -672,7 +672,7 @@ class BCRMapXMLWriterTestCase(unittest.TestCase):
     def test_serialize_using_hazard_realization(self):
         expected = StringIO.StringIO("""\
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <bcrMap interestRate="10.0" assetLifeExpectancy="50.0" sourceModelTreePath="b1|b2" gsimTreePath="b1|b2" lossCategory="economic" unit="USD" lossType="structural">
     <node>
       <gml:Point>
