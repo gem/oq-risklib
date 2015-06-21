@@ -45,10 +45,20 @@ from openquake.commonlib.calculators.classical import (
 counts_dt = numpy.dtype([('rup', int), ('gmf', int)])
 
 
-def counts_per_rlz(num_sites, num_imts, rlzs_assoc, sescollection):
+def num_affected_sites(rupture, num_sites):
+    """
+    Return the number of sites affected by the rupture
+
+    :param rupture: a SESRupture object
+    :param num_sites: the total number of sites
+    """
+    return (len(rupture.indices) if rupture.indices is not None
+            else num_sites)
+
+
+def counts_per_rlz(num_sites, rlzs_assoc, sescollection):
     """
     :param num_sites: the number of sites
-    :param num_imts: the number of IMTs
     :param rlzs_assoc: an instance of RlzsAssoc
     :param sescollection: a list of dictionaries tag -> SESRupture
     :returns: the numbers of nonzero GMFs, for each realization
@@ -66,10 +76,25 @@ def counts_per_rlz(num_sites, num_imts, rlzs_assoc, sescollection):
 
                 # gmvs per realization
                 for rup in sc.itervalues():
-                    counts['gmf'][i] += (
-                        len(rup.indices) if rup.indices is not None
-                        else num_sites) * num_imts
+                    counts['gmf'][i] += num_affected_sites(rup, num_sites)
     return counts
+
+
+# this is tested in the sanity check in the execute method
+def get_gmfs_nbytes(num_sites, num_imts, rlzs_assoc, sescollection):
+    """
+    :param num_sites: the number of sites
+    :param num_imts: the number of IMTs
+    :param rlzs_assoc: an instance of RlzsAssoc
+    :param sescollection: a list of dictionaries tag -> SESRupture
+    :returns: the number of bytes required to store the GMFs
+    """
+    nbytes = 0
+    for sescol, gsims in zip(sescollection, rlzs_assoc.get_gsims_by_col()):
+        bytes_per_gmf = 4 + 8 * len(gsims) * num_imts
+        for tag, rup in sescol.iteritems():
+            nbytes += bytes_per_gmf * num_affected_sites(rup, num_sites)
+    return nbytes
 
 
 def get_geom(surface, is_from_fault_source, is_multi_surface):
@@ -358,8 +383,12 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
             self.sescollection = sescollection
         with self.monitor('counts_per_rlz'):
             self.counts_per_rlz = counts_per_rlz(
-                len(self.sitecol), len(self.oqparam.imtls),
-                self.rlzs_assoc, sescollection)
+                len(self.sitecol), self.rlzs_assoc, sescollection)
+            self.datastore['/counts_per_rlz'].attrs[
+                'gmfs_nbytes'] = get_gmfs_nbytes(
+                    len(self.sitecol), len(self.oqparam.imtls),
+                    self.rlzs_assoc, sescollection)
+
 
 # ######################## GMF calculator ############################ #
 
@@ -368,7 +397,7 @@ class EventBasedRuptureCalculator(base.HazardCalculator):
 def make_gmf_by_tag(ses_ruptures, sitecol, imts, gsims,
                     trunc_level, correl_model, monitor):
     """
-    :returns: a dictionary tag -> (r_sites, gmf_array)
+    :returns: a dictionary tag -> gmf_array
     """
     dic = {}
     ctx_mon = monitor('make contexts')
@@ -402,8 +431,8 @@ def compute_gmfs_and_curves(ses_ruptures, sitecol, rlzs_assoc, monitor):
     :param monitor:
         a Monitor instance
     :returns:
-        a dictionary trt_model_id -> curves_by_gsim
-        where the list of bounding boxes is empty
+        a dictionary (trt_model_id, gsim) -> haz_curves and
+        (trt_model_id, None) -> gmf_by_tag
    """
     oq = monitor.oqparam
     # NB: by construction each block is a non-empty list with
@@ -411,50 +440,52 @@ def compute_gmfs_and_curves(ses_ruptures, sitecol, rlzs_assoc, monitor):
     col_id = ses_ruptures[0].col_id
     trt_id = rlzs_assoc.csm_info.get_trt_id(col_id)
     gsims = rlzs_assoc.get_gsims_by_col()[col_id]
-    trunc_level = getattr(oq, 'truncation_level', None)
+    trunc_level = oq.truncation_level
     correl_model = readinput.get_correl_model(oq)
     num_sites = len(sitecol)
-    dic = make_gmf_by_tag(
+    gmf_by_tag = make_gmf_by_tag(
         ses_ruptures, sitecol.complete, oq.imtls, gsims,
         trunc_level, correl_model, monitor)
-    zero = zero_curves(num_sites, oq.imtls)
-    result = AccumDict({(trt_id, str(gsim)): [dic, zero] for gsim in gsims})
-    gmfs = [dic[tag] for tag in sorted(dic)]
+    result = {(trt_id, None): gmf_by_tag
+              if oq.ground_motion_fields else {}}
     if oq.hazard_curves_from_gmfs:
-        duration = oq.investigation_time * oq.ses_per_logic_tree_path * (
-            oq.number_of_logic_tree_samples or 1)
-        for gsim in gsims:
-            gs = str(gsim)
-            result[trt_id, gs][1] = to_haz_curves(
-                num_sites, gs, gmfs, oq.imtls,
-                oq.investigation_time, duration)
-    if not oq.ground_motion_fields:
-        # reset the gmf_by_tag dictionary to avoid
-        # transferring a lot of unused data
-        for key in result:
-            result[key][0].clear()
+        with monitor('bulding hazard curves', measuremem=False) as mon:
+            tags = sorted(gmf_by_tag)
+            duration = oq.investigation_time * oq.ses_per_logic_tree_path * (
+                oq.number_of_logic_tree_samples or 1)
+            for gsim in gsims:
+                gs = str(gsim)
+                gmfs = [gmf_by_tag[tag][gs] for tag in tags]
+                indices = [gmf_by_tag[tag]['idx'] for tag in tags]
+                result[trt_id, gs] = to_haz_curves(
+                    num_sites, gmfs, indices, oq.imtls,
+                    oq.investigation_time, duration)
+        mon.flush()
     return result
 
 
-def to_haz_curves(num_sites, gs, gmfs, imtls, investigation_time, duration):
+def to_haz_curves(num_sites, gmfs, indices, imtls,
+                  investigation_time, duration):
     """
     :param num_sites: length of the full site collection
-    :param gs: a GSIM string
     :param gmfs: gmf arrays
+    :param indices: list of list of site indices
     :param imtls: ordered dictionary {IMT: intensity measure levels}
     :param investigation_time: investigation time
     :param duration: investigation_time * number of Stochastic Event Sets
     """
     # group gmvs by site index
     data = [[] for idx in range(num_sites)]
-    for gmf in gmfs:
-        for idx, gmv in zip(gmf['idx'], gmf[gs]):
+    for site_ids, gmf in zip(indices, gmfs):
+        for idx, gmv in zip(site_ids, gmf):
             data[idx].append(gmv)
     curves = zero_curves(num_sites, imtls)
     for imt in imtls:
         curves[imt] = numpy.array([
-            gmvs_to_haz_curve([gmv[imt] for gmv in gmvs], imtls[imt],
-                              investigation_time, duration) for gmvs in data])
+            gmvs_to_haz_curve(
+                [gmv[imt] for gmv in gmvs],
+                imtls[imt], investigation_time, duration)
+            for gmvs in data])
     return curves
 
 
@@ -465,7 +496,6 @@ class EventBasedCalculator(ClassicalCalculator):
     """
     pre_calculator = 'event_based_rupture'
     core_func = compute_gmfs_and_curves
-    gmf_by_trt_gsim = datastore.persistent_attribute('gmf_by_trt_gsim')
     is_stochastic = True
 
     def pre_execute(self):
@@ -482,19 +512,31 @@ class EventBasedCalculator(ClassicalCalculator):
     def combine_curves_and_save_gmfs(self, acc, res):
         """
         Combine the hazard curves (if any) and save the gmfs (if any)
-        sequentially; however, notice that the gmfs may come from
+        sequentially; notice that the gmfs may come from
         different tasks in any order.
 
         :param acc: an accumulator for the hazard curves
-        :param res: a dictionary trt_id, gsim -> (gmfs, curves_by_imt)
+        :param res: a dictionary trt_id, gsim -> gmf_by_tag or curves_by_imt
         :returns: a new accumulator
         """
-        gen_gmf = self.oqparam.ground_motion_fields
+        sav_mon = self.monitor('saving gmfs')
+        agg_mon = self.monitor('aggregating hcurves')
         for trt_id, gsim in res:
-            gmf_by_tag, curves_by_imt = res[trt_id, gsim]
-            if gen_gmf:
-                self.gmf_dict[trt_id, gsim] += gmf_by_tag
-            acc = agg_dicts(acc, AccumDict({(trt_id, gsim): curves_by_imt}))
+            if gsim is None:  # save gmfs
+                with sav_mon:
+                    for tag, gmf in res[trt_id, None].iteritems():
+                        dataset = '/gmfs/' + tag
+                        self.datastore[dataset] = gmf
+                        self.datastore[dataset].attrs['trt_model_id'] = trt_id
+                        self.nbytes += gmf.nbytes
+                    self.datastore.hdf5.flush()
+            else:  # aggregate hcurves
+                with agg_mon:
+                    curves_by_imt = res[trt_id, gsim]
+                    acc = agg_dicts(
+                        acc, AccumDict({(trt_id, gsim): curves_by_imt}))
+        sav_mon.flush()
+        agg_mon.flush()
         return acc
 
     def execute(self):
@@ -510,31 +552,33 @@ class EventBasedCalculator(ClassicalCalculator):
         monitor.oqparam = oq
         zc = zero_curves(len(self.sitecol), self.oqparam.imtls)
         zerodict = AccumDict((key, zc) for key in self.rlzs_assoc)
-        self.gmf_dict = collections.defaultdict(AccumDict)
+        self.nbytes = 0
         curves_by_trt_gsim = parallel.apply_reduce(
             self.core_func.__func__,
             (self.sesruptures, self.sitecol, self.rlzs_assoc, monitor),
             concurrent_tasks=self.oqparam.concurrent_tasks,
             acc=zerodict, agg=self.combine_curves_and_save_gmfs,
             key=operator.attrgetter('col_id'))
+        if oq.ground_motion_fields:
+            # sanity check on the saved gmfs size
+            expected_nbytes = self.datastore[
+                '/counts_per_rlz'].attrs['gmfs_nbytes']
+            self.datastore['/gmfs'].attrs['nbytes'] = self.nbytes
+            assert self.nbytes == expected_nbytes, (
+                self.nbytes, expected_nbytes)
         return curves_by_trt_gsim
 
     def post_execute(self, result):
         """
-        Return a dictionary with the output files, i.e. gmfs (if any)
-        and hazard curves (if any).
+        :param result:
+            a dictionary (trt_model_id, gsim) -> haz_curves or an empty
+            dictionary if hazard_curves_from_gmfs is false
         """
         oq = self.oqparam
         if not oq.hazard_curves_from_gmfs and not oq.ground_motion_fields:
             return
         if oq.hazard_curves_from_gmfs:
             ClassicalCalculator.post_execute.__func__(self, result)
-        if oq.ground_motion_fields:
-            for (trt_id, gsim), gmf_by_tag in self.gmf_dict.items():
-                self.gmf_dict[trt_id, gsim] = {tag: gmf_by_tag[tag][gsim]
-                                               for tag in gmf_by_tag}
-            self.gmf_by_trt_gsim = self.gmf_dict
-            self.gmf_dict.clear()
         if oq.mean_hazard_curves:  # compute classical ones
             export_dir = os.path.join(oq.export_dir, 'cl')
             if not os.path.exists(export_dir):

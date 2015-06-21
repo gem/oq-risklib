@@ -6,6 +6,7 @@ import numpy.testing
 
 from openquake.baselib.general import AccumDict
 from openquake.hazardlib.site import FilteredSiteCollection
+from openquake.commonlib.datastore import DataStore
 from openquake.commonlib.util import max_rel_diff_index
 from openquake.commonlib.tests.calculators import CalculatorTestCase
 from openquake.qa_tests_data.event_based import (
@@ -49,29 +50,6 @@ def joint_prob_of_occurrence(gmvs_site_1, gmvs_site_2, gmv, time_span,
     return prob
 
 
-def get_gmfs_by_imt(fname, sitecol, imts):
-    """
-    Return a list of dictionaries with a ground motion field per IMT,
-    one dictionary per rupture.
-
-    :param fname: path to the CSV file
-    :param sitecol: the underlying site collection
-    :param imts: the IMTs corresponding to the columns in the CSV file
-    """
-    dicts = []
-    with open(fname) as f:
-        for row in csv.reader(f):
-            indices = map(int, row[1].split())
-            sc = FilteredSiteCollection(indices, sitecol)
-            dic = AccumDict()
-            for imt, col in zip(imts, row[2:]):
-                gmf = numpy.array(map(float, col.split()))
-                dic[imt] = sc.expand(gmf, 0)
-            dic.tag = row[0]
-            dicts.append(dic)
-    return sorted(dicts, key=lambda dic: dic.tag)
-
-
 class EventBasedTestCase(CalculatorTestCase):
 
     @attr('qa', 'hazard', 'event_based')
@@ -81,14 +59,18 @@ class EventBasedTestCase(CalculatorTestCase):
                     sc3: [0.99, 0.22]}
 
         for case in expected:
-            out = self.run_calc(case.__file__, 'job.ini', exports='csv')
+            self.run_calc(case.__file__, 'job.ini')
             oq = self.calc.oqparam
             self.assertEqual(list(oq.imtls), ['PGA'])
-            [fname] = out['gmf_by_trt_gsim', 'csv']
-            gmfs = get_gmfs_by_imt(fname, self.calc.sitecol, oq.imtls)
-            gmvs_site_1 = [gmf['PGA'][0] for gmf in gmfs]
-            gmvs_site_2 = [gmf['PGA'][1] for gmf in gmfs]
-
+            dstore = DataStore(self.calc.datastore.calc_id)
+            gmfs = dstore['/gmfs']
+            gmvs_site_1 = []
+            gmvs_site_2 = []
+            for dataset in gmfs.itervalues():
+                gmv1, gmv2 = dataset.value['BooreAtkinson2008']['PGA']
+                gmvs_site_1.append(gmv1)
+                gmvs_site_2.append(gmv2)
+            dstore.close()
             joint_prob_0_5 = joint_prob_of_occurrence(
                 gmvs_site_1, gmvs_site_2, 0.5, oq.investigation_time,
                 oq.ses_per_logic_tree_path)
@@ -104,13 +86,13 @@ class EventBasedTestCase(CalculatorTestCase):
     def test_blocksize(self):
         out = self.run_calc(blocksize.__file__, 'job.ini', concurrent_tasks=4,
                             exports='csv')
-        [fname] = out['gmf_by_trt_gsim', 'csv']
+        [fname] = out['/gmfs', 'csv']
         self.assertEqualFiles('expected/0-ChiouYoungs2008.csv',
                               fname, sorted)
 
         out = self.run_calc(blocksize.__file__, 'job.ini', concurrent_tasks=8,
                             exports='csv')
-        [fname] = out['gmf_by_trt_gsim', 'csv']
+        [fname] = out['/gmfs', 'csv']
         self.assertEqualFiles('expected/0-ChiouYoungs2008.csv',
                               fname, sorted)
 
@@ -118,7 +100,7 @@ class EventBasedTestCase(CalculatorTestCase):
     def test_case_1(self):
         out = self.run_calc(case_1.__file__, 'job.ini', exports='csv')
 
-        [fname] = out['gmf_by_trt_gsim', 'csv']
+        [fname] = out['/gmfs', 'csv']
         self.assertEqualFiles(
             'expected/0-SadighEtAl1997.csv', fname, sorted)
 
@@ -129,7 +111,7 @@ class EventBasedTestCase(CalculatorTestCase):
     @attr('qa', 'hazard', 'event_based')
     def test_case_2(self):
         out = self.run_calc(case_2.__file__, 'job.ini', exports='csv')
-        [fname] = out['gmf_by_trt_gsim', 'csv']
+        [fname] = out['/gmfs', 'csv']
         self.assertEqualFiles(
             'expected/SadighEtAl1997.csv', fname, sorted)
 
@@ -140,13 +122,13 @@ class EventBasedTestCase(CalculatorTestCase):
     @attr('qa', 'hazard', 'event_based')
     def test_case_2bis(self):  # oversampling
         out = self.run_calc(case_2.__file__, 'job_2.ini', exports='csv,xml')
-        ltr = out['gmf_by_trt_gsim', 'csv']  # 2 realizations, 1 TRT
+        ltr = out['/gmfs', 'csv']  # 2 realizations, 1 TRT
         self.assertEqualFiles(
             'expected/gmf-smltp_b1-gsimltp_b1-ltr_0.csv', ltr[0])
         self.assertEqualFiles(
             'expected/gmf-smltp_b1-gsimltp_b1-ltr_1.csv', ltr[1])
 
-        ltr0 = out['gmf_by_trt_gsim', 'xml'][0]
+        ltr0 = out['/gmfs', 'xml'][0]
         self.assertEqualFiles('expected/gmf-smltp_b1-gsimltp_b1-ltr_0.xml',
                               ltr0)
 
@@ -175,7 +157,7 @@ gmf-smltp_b2-gsimltp_*_b2_4_*_*.csv
 gmf-smltp_b2-gsimltp_*_b2_5_*_*.csv
 gmf-smltp_b3-gsimltp_*_*_*_b4_1.csv'''.split()
         out = self.run_calc(case_5.__file__, 'job.ini', exports='csv')
-        fnames = out['gmf_by_trt_gsim', 'csv']
+        fnames = out['/gmfs', 'csv']
         for exp, got in zip(expected, fnames):
             self.assertEqualFiles('expected/%s' % exp, got, sorted)
 
@@ -220,7 +202,7 @@ gmf-smltp_b3-gsimltp_*_*_*_b4_1.csv'''.split()
     @attr('qa', 'hazard', 'event_based')
     def test_case_13(self):
         out = self.run_calc(case_13.__file__, 'job.ini', exports='csv')
-        [fname] = out['gmf_by_trt_gsim', 'csv']
+        [fname] = out['/gmfs', 'csv']
         self.assertEqualFiles('expected/0-BooreAtkinson2008.csv',
                               fname, sorted)
 
@@ -250,6 +232,6 @@ gmf-smltp_b3-gsimltp_*_*_*_b4_1.csv'''.split()
             'gmf-smltp_b1-gsimltp_CF-ltr_2.csv',
         ]
         out = self.run_calc(case_18.__file__, 'job_3.ini', exports='csv')
-        fnames = out['gmf_by_trt_gsim', 'csv']
+        fnames = out['/gmfs', 'csv']
         for exp, got in zip(expected, fnames):
             self.assertEqualFiles('expected/%s' % exp, got, sorted)
