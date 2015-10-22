@@ -28,7 +28,7 @@ from openquake.commonlib import readinput, parallel, datastore
 from openquake.risklib import riskinput, scientific
 from openquake.commonlib.parallel import apply_reduce
 
-OUTPUTS = ['agg_losses-rlzs', 'avg_losses-rlzs', 'specific-losses-rlzs',
+OUTPUTS = ['agg_losses-rlzs', 'loss_map-rlzs', 'specific-losses-rlzs',
            'rcurves-rlzs', 'icurves-rlzs']
 
 AGGLOSS, AVGLOSS, SPECLOSS, RC, IC = 0, 1, 2, 3, 4
@@ -257,7 +257,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
         :param result: a numpy array of shape (O, L, R)
         """
         for idx, arrays in numpy.ndenumerate(result):
-            # TODO: special case for avg_losses, they can be summed directly
+            # TODO: special case for loss_map, they can be summed directly
             if idx[0] == AVGLOSS:  # arrays has only 1 element
                 acc[idx] = [sum(acc[idx] + arrays)]
             else:
@@ -320,7 +320,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
         # The following is commented on purpose:
         # if (self.oqparam.conditional_loss_poes and
         #         'rcurves-rlzs' in self.datastore):
-        #     self.build_loss_maps()
+        #     self.build_loss_map()
 
     def build_specific_loss_curves(self, group, kind='loss'):
         ses_ratio = self.oqparam.ses_ratio
@@ -335,7 +335,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
                 key = 'specific-loss_curves-rlzs/%s/%s' % (loss_type, rlz)
                 self.datastore[key] = curves
 
-    def build_loss_maps(self):
+    def build_loss_map(self):
         """
         Build loss maps from the loss curves
         """
@@ -344,7 +344,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
             asset_values = self.assetcol[loss_type]
             ratios = group.attrs['loss_ratios']
             for rlz, poe_matrix in group.items():
-                maps = scientific.calc_loss_maps(
+                maps = scientific.calc_loss_map(
                     oq.conditional_loss_poes, asset_values, ratios, poe_matrix)
                 key = 'lmaps-rlzs/%s/%s' % (loss_type, rlz)
                 self.datastore[key] = maps
@@ -370,7 +370,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
             asset_values = self.assetcol[loss_type]
             data = []
             for rlz, dataset in zip(rlzs, group.values()):
-                dkey = 'avg_losses-rlzs/%s/%s' % (loss_type, rlz.uid)
+                dkey = 'loss_map-rlzs/%s/%s' % (loss_type, rlz.uid)
                 average_losses = self.datastore[dkey].value
                 ratios = group.attrs['loss_ratios']
                 lcs = []
@@ -410,7 +410,7 @@ class EventBasedRiskCalculator(base.RiskCalculator):
             group = self.datastore['/specific-loss_curves-rlzs/%s' % loss_type]
             data = []
             for rlz, dataset in zip(rlzs, group.values()):
-                dkey = 'avg_losses-rlzs/%s/%s' % (loss_type, rlz.uid)
+                dkey = 'loss_map-rlzs/%s/%s' % (loss_type, rlz.uid)
                 average_losses = self.datastore[dkey][specific_ids]
                 lcs = dataset.value
                 losses_poes = numpy.array(  # -> shape (N, 2, C)
@@ -465,10 +465,10 @@ class EventBasedRiskCalculator(base.RiskCalculator):
                 self._store(path % 'loss_curves', loss_curve_stats[i])
                 self._store(path % 'ins_curves', ins_curve_stats[i])
                 if oq.conditional_loss_poes:
-                    self._store(path % 'loss_maps', loss_map_stats[i])
+                    self._store(path % 'loss_map', loss_map_stats[i])
 
         stats = scientific.SimpleStats(rlzs, oq.quantile_loss_curves)
-        stats.compute_and_store('avg_losses', self.datastore)
+        stats.compute_and_store('loss_map', self.datastore)
 
     def _store(self, path, curves):
         if curves.view(float).sum():

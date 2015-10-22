@@ -226,14 +226,19 @@ class DataStore(collections.MutableMapping):
         """
         return Hdf5Dataset(self.hdf5, key, dtype, size)
 
-    def export_path(self, key, fmt):
+    def export_path(self, name, export_dir=None):
         """
-        Return the name of the exported file.
+        Return the path of the exported file by adding the export_dir in
+        front, the calculation ID at the end.
 
-        :param key: the datastore key
-        :param fmt: the export format extension
+        :param fname: file name template
         """
-        return os.path.join(self.export_dir, key + '.' + fmt)
+        assert not os.path.dirname(name), name
+        name, ext = os.path.splitext(name)
+        newname = '%s_%s%s' % (name, self.calc_id, ext)
+        if export_dir is None:
+            export_dir = self.export_dir
+        return os.path.join(export_dir, newname)
 
     def export_csv(self, key):
         """
