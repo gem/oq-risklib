@@ -1258,7 +1258,7 @@ def loss_map_matrix(poes, curves):
     ).reshape((len(poes), len(curves)))
 
 
-def calc_loss_maps(conditional_loss_poes, asset_values, ratios, poe_matrix):
+def calc_loss_map(conditional_loss_poes, asset_values, ratios, poe_matrix):
     """
     Compute loss maps from the PoE matrix (i.e. the loss curves).
 
@@ -1490,17 +1490,17 @@ class SimpleStats(object):
     >>> Realization = namedtuple('Realization', 'ordinal uid weight')
     >>> rlzs = [Realization(0, 'b1', 0.3), Realization(1, 'b2', 0.7)]
     >>> dstore = {
-    ...     'avg_losses-rlzs':
+    ...     'loss_map-rlzs':
     ...        {'structural':
     ...            {'b1': numpy.array([[0.10, 0.20], [0.30, 0.40]]),
     ...             'b2': numpy.array([[0.12, 0.22], [0.33, 0.44]]),
     ...            }}}
     >>> stats = SimpleStats(rlzs, quantiles=[0.2])
-    >>> stats.compute_and_store('avg_losses', dstore)
-    >>> dstore['avg_losses-stats/structural/mean']
+    >>> stats.compute_and_store('loss_map', dstore)
+    >>> dstore['loss_map-stats/structural/mean']
     array([[ 0.114,  0.214],
            [ 0.321,  0.428]])
-    >>> dstore['avg_losses-stats/structural/quantile-0.2']
+    >>> dstore['loss_map-stats/structural/quantile-0.2']
     array([[ 0.1,  0.2],
            [ 0.3,  0.4]])
     """

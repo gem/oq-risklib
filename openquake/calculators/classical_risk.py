@@ -62,7 +62,7 @@ class ClassicalRiskCalculator(base.RiskCalculator):
     Classical Risk calculator
     """
     pre_calculator = 'classical'
-    avg_losses = datastore.persistent_attribute('avg_losses/rlzs')
+    loss_map = datastore.persistent_attribute('loss_map/rlzs')
     core_func = classical_risk
 
     def pre_execute(self):
@@ -100,7 +100,7 @@ class ClassicalRiskCalculator(base.RiskCalculator):
         num_rlzs = len(self.rlzs_assoc.realizations)
         assets = riskinput.sorted_assets(self.assets_by_site)
         self.asset_no_by_id = {a.id: no for no, a in enumerate(assets)}
-        avg_losses = numpy.zeros(
+        loss_map = numpy.zeros(
             (num_rlzs, len(self.asset_no_by_id)), avg_loss_dt)
 
         for rlz_no in result:
@@ -112,6 +112,6 @@ class ClassicalRiskCalculator(base.RiskCalculator):
                 losses = []
                 for (loss_type, _) in keys:
                     losses.extend(losses_by_lt_asset[loss_type, asset])
-                avg_losses[rlz_no][asset_no] = tuple(losses)
+                loss_map[rlz_no][asset_no] = tuple(losses)
 
-        self.avg_losses = avg_losses
+        self.loss_map = loss_map

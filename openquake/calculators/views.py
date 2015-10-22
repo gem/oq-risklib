@@ -233,8 +233,8 @@ def data_transfer(token, dstore):
 
 
 # this is used by the ebr calculator
-@view.add('old_avg_losses')
-def view_old_avg_losses(token, dstore):
+@view.add('old_loss_map')
+def view_old_loss_map(token, dstore):
     stats = 'specific/loss_curves-stats' in dstore
     group = (dstore['specific/loss_curves-stats'] if stats
              else dstore['specific/loss_curves-rlzs'])
@@ -278,14 +278,14 @@ def sum_table(records):
 
 
 # this is used by the ebr calculator
-@view.add('mean_avg_losses')
-def view_mean_avg_losses(token, dstore):
+@view.add('mean_loss_map')
+def view_mean_loss_map(token, dstore):
     assets = dstore['assetcol'].value['asset_ref']
     try:
-        group = dstore['avg_losses-stats']
+        group = dstore['loss_map-stats']
         single_rlz = False
     except KeyError:
-        group = dstore['avg_losses-rlzs']
+        group = dstore['loss_map-rlzs']
         single_rlz = True
     loss_types = sorted(group)
     header = ['asset_ref'] + loss_types

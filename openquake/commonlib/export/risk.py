@@ -129,19 +129,19 @@ def extract_outputs(dkey, dstore, ext=''):
 
 
 # this is used by classical_risk from csv
-@export.add(('avg_losses', 'csv'))
-def export_avg_losses(ekey, dstore):
+@export.add(('loss_map', 'csv'))
+def export_loss_map(ekey, dstore):
     """
     :param ekey: export key, i.e. a pair (datastore key, fmt)
     :param dstore: datastore object
     """
-    avg_losses = dstore[ekey[0] + '/rlzs']
+    loss_map = dstore[ekey[0] + '/rlzs']
     rlzs = dstore['rlzs_assoc'].realizations
     assets = get_assets(dstore)
     columns = 'asset_ref lon lat avg_loss~structural ins_loss~structural' \
         .split()
     fnames = []
-    for rlz, losses in zip(rlzs, avg_losses):
+    for rlz, losses in zip(rlzs, loss_map):
         dest = dstore.export_path('rlz-%03d-avg_loss.csv' % rlz.ordinal)
         data = compose_arrays(assets, losses)
         writers.write_csv(dest, data, fmt='%10.6E', header=columns)
@@ -177,8 +177,8 @@ def export_avglosses_csv(ekey, dstore):
 
 
 @export.add(
-    ('avg_losses-rlzs', 'csv'),
-    ('avg_losses-stats', 'csv'),
+    ('loss_map-rlzs', 'csv'),
+    ('loss_map-stats', 'csv'),
     ('rcurves-rlzs', 'csv'),
     ('icurves-rlzs', 'csv'),
     ('rcurves-stats', 'csv'),
@@ -196,10 +196,10 @@ def export_ebr(ekey, dstore):
 @export.add(
     ('specific-loss_curves-rlzs', 'csv'),
     ('specific-ins_curves-rlzs', 'csv'),
-    ('specific-loss_maps-rlzs', 'csv'),
+    ('specific-loss_map-rlzs', 'csv'),
     ('specific-loss_curves-stats', 'csv'),
     ('specific-ins_curves-stats', 'csv'),
-    ('specific-loss_maps-stats', 'csv'),
+    ('specific-loss_map-stats', 'csv'),
 )
 def export_ebr_specific(ekey, dstore):
     all_assets = get_assets_sites(dstore)

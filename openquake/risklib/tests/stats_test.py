@@ -223,9 +223,9 @@ class StatsTestCase(unittest.TestCase):
 
         tests.check_equal(__file__, 'expected_loss_curves.csv', actual)
 
-        actual = os.path.join(tempdir, 'expected_loss_maps.csv')
+        actual = os.path.join(tempdir, 'expected_loss_map.csv')
         writers.write_csv(actual, maps, fmt='%05.2f')
-        tests.check_equal(__file__, 'expected_loss_maps.csv', actual)
+        tests.check_equal(__file__, 'expected_loss_map.csv', actual)
 
         # remove only if the test pass
         shutil.rmtree(tempdir)

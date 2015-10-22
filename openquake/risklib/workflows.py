@@ -306,7 +306,7 @@ class Classical(Workflow):
       a numpy array of N insured loss curves, shaped (N, 2, R)
     :attr average_insured_losses:
       a numpy array of N average insured loss values
-    :attr loss_maps:
+    :attr loss_map:
       a numpy array of P elements holding N loss maps where P is the
       number of `conditional_loss_poes` considered. Shape: (P, N)
     :attr loss_fractions:
@@ -412,7 +412,7 @@ class Classical(Workflow):
             assets, loss_type, loss_curves=curves,
             average_losses=average_losses, insured_curves=insured_curves,
             average_insured_losses=average_insured_losses,
-            loss_maps=maps, loss_fractions=fractions)
+            loss_map=maps, loss_fractions=fractions)
 
     def statistics(self, all_outputs, quantiles):
         """
@@ -481,7 +481,7 @@ class ProbabilisticEventBased(Workflow):
     :attr stddev_insured_losses:
       a numpy array holding N standard deviation of losses
 
-    :attr loss_maps:
+    :attr loss_map:
       a numpy array of P elements holding N loss maps where P is the
       number of `conditional_loss_poes` considered. Shape: (P, N)
 
