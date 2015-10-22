@@ -158,7 +158,7 @@ def export_avglosses_csv(ekey, dstore):
     :param ekey: export key, i.e. a pair (datastore key, fmt)
     :param dstore: datastore object
     """
-    outs = extract_outputs(ekey[0], dstore, ekey[1])
+    outs = extract_outputs('loss_map-rlzs', dstore, ekey[1])
     sitemesh = dstore['sitemesh']
     assetcol = dstore['assetcol']
     header = ['lon', 'lat', 'asset_ref', 'asset_value', 'average_loss',
