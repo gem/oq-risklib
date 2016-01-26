@@ -67,10 +67,11 @@ executor.num_tasks_hint = executor._max_workers * 8
 try:
     import prctl
 except ImportError:
-    def set_pdeathsig():
-        pass
+    def set_pdeathsig(worker_no):
+        """Do nothing"""
 else:
-    def set_pdeathsig():
+    def set_pdeathsig(worker_no):
+        """Set signal received when parent dies"""
         prctl.set_pdeathsig(signal.SIGKILL)
 
 
@@ -79,8 +80,7 @@ def initpool():
     Makes sure that all the workers get a SIGKILL when their parent dies.
     Works if you have the module prctl installed (linux-only).
     """
-    for _ in range(executor._max_workers):
-        executor.submit(set_pdeathsig).result()
+    executor.map(set_pdeathsig, range(executor._max_workers))
 
 
 def no_distribute():
