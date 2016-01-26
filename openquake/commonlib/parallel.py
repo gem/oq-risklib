@@ -22,6 +22,7 @@ TODO: write documentation.
 
 import os
 import sys
+import signal
 import logging
 import operator
 import traceback
@@ -62,6 +63,24 @@ executor = ProcessPoolExecutor()
 # cores; it is a heuristic number to get a distribution of the
 # load good for our cluster; it has no more significance than that
 executor.num_tasks_hint = executor._max_workers * 8
+
+try:
+    import prctl
+except ImportError:
+    def set_pdeathsig():
+        pass
+else:
+    def set_pdeathsig():
+        prctl.set_pdeathsig(signal.SIGKILL)
+
+
+def executor_init():
+    """
+    Makes sure that all the workers get a SIGKILL when their parent dies.
+    Works if you have the module prctl installed (linux-only).
+    """
+    for _ in range(executor._max_workers):
+        executor.submit(set_pdeathsig).result()
 
 
 def no_distribute():

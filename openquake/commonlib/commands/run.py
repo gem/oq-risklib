@@ -23,7 +23,8 @@ import pstats
 import io
 
 from openquake.baselib import performance, general
-from openquake.commonlib import sap, readinput, valid, datastore, oqvalidation
+from openquake.commonlib import (
+    sap, readinput, valid, datastore, oqvalidation, parallel)
 from openquake.calculators import base, views
 
 CT = oqvalidation.OqParam.concurrent_tasks.default
@@ -136,6 +137,7 @@ def run(job_ini, slowest, hc, concurrent_tasks=CT, exports='',
     :param pdb:
         flag to enable pdb debugging on failing calculations
     """
+    parallel.executor_init()
     if slowest:
         prof = cProfile.Profile()
         stmt = '_run(job_ini, concurrent_tasks, pdb, loglevel, hc, exports)'
