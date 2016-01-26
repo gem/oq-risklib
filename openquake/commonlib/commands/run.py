@@ -137,7 +137,7 @@ def run(job_ini, slowest, hc, concurrent_tasks=CT, exports='',
     :param pdb:
         flag to enable pdb debugging on failing calculations
     """
-    parallel.executor_init()
+    parallel.initpool()
     if slowest:
         prof = cProfile.Profile()
         stmt = '_run(job_ini, concurrent_tasks, pdb, loglevel, hc, exports)'

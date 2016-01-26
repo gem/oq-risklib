@@ -74,7 +74,7 @@ else:
         prctl.set_pdeathsig(signal.SIGKILL)
 
 
-def executor_init():
+def initpool():
     """
     Makes sure that all the workers get a SIGKILL when their parent dies.
     Works if you have the module prctl installed (linux-only).
