@@ -22,6 +22,7 @@ TODO: write documentation.
 
 import os
 import sys
+import signal
 import logging
 import operator
 import traceback
@@ -62,6 +63,24 @@ executor = ProcessPoolExecutor()
 # cores; it is a heuristic number to get a good distribution;
 # it has no more significance than that
 executor.num_tasks_hint = executor._max_workers * 4
+
+try:
+    import prctl
+except ImportError:
+    def set_pdeathsig(worker_no):
+        """Do nothing"""
+else:
+    def set_pdeathsig(worker_no):
+        """Set signal received when parent dies"""
+        prctl.set_pdeathsig(signal.SIGKILL)
+
+
+def initpool():
+    """
+    Makes sure that all the workers get a SIGKILL when their parent dies.
+    Works if you have the module prctl installed (linux-only).
+    """
+    executor.map(set_pdeathsig, range(executor._max_workers))
 
 
 def no_distribute():
