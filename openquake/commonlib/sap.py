@@ -123,6 +123,7 @@ class Parser(object):
                   nargs=nargs)
         default = self.argdict[name]
         if default is not NODEFAULT:
+            kw['nargs'] = nargs or '?'
             kw['default'] = default
             kw['help'] = kw['help'] + ' [default: %s]' % str(default)
         self._add(name, name, **kw)
