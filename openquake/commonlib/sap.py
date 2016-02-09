@@ -117,7 +117,7 @@ class Parser(object):
         self._argno += 1
 
     def arg(self, name, help, type=None, choices=None, metavar=None,
-            nargs='?'):
+            nargs=None):
         """Describe a positional argument"""
         kw = dict(help=help, type=type, choices=choices, metavar=metavar,
                   nargs=nargs)
