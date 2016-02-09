@@ -43,7 +43,7 @@ class InfoTestCase(unittest.TestCase):
     EXPECTED = '''<CompositionInfo
 b1, x15.xml, trt=[0], weight=1.00: 1 realization(s)>
 See https://github.com/gem/oq-risklib/blob/master/doc/effective-realizations.rst for an explanation
-<RlzsAssoc(1)
+<RlzsAssoc(size=1, rlzs=1)
 0,AkkarBommer2010: ['<0,b1,@_AkkarBommer2010_@_@_@_@_@,w=1.0>']>'''
 
     def test_zip(self):
@@ -67,9 +67,9 @@ class TidyTestCase(unittest.TestCase):
     </gmf>
   </gmfSet>
 </gmfCollection>
-</nrml>''')
+</nrml>''', suffix='.xml')
         with Print.patch() as p:
-            tidy(fname)
+            tidy([fname])
         self.assertIn('Reformatted', str(p))
         self.assertEqual(open(fname).read(), '''\
 <?xml version="1.0" encoding="utf-8"?>
@@ -109,9 +109,9 @@ xmlns:gml="http://www.opengis.net/gml"
     </gmf>
   </gmfSet>
 </gmfCollection>
-</nrml>''')
+</nrml>''', suffix='.xml')
         with Print.patch() as p:
-            tidy(fname)
+            tidy([fname])
         self.assertIn('Could not convert gmv->positivefloat: '
                       'float -0.012492 < 0, line 8 of', str(p))
 
@@ -124,7 +124,8 @@ class RunShowExportTestCase(unittest.TestCase):
         """
         job_ini = os.path.join(os.path.dirname(case_1.__file__), 'job.ini')
         with Print.patch() as cls.p:
-            cls.datastore = _run(job_ini, 0, False, 'info', None, '').datastore
+            cls.datastore = _run(
+                job_ini, 0, False, 'info', None, '', {}).datastore
 
     def test_run_calc(self):
         self.assertIn('See the output with hdfview', str(self.p))
@@ -132,36 +133,36 @@ class RunShowExportTestCase(unittest.TestCase):
     def test_show_calc(self):
         # test show all
         with Print.patch() as p:
-            show(0)
+            show('all')
         with Print.patch() as p:
-            show(self.datastore.calc_id)
+            show('contents', self.datastore.calc_id)
         self.assertIn('sitemesh', str(p))
 
         with Print.patch() as p:
-            show(self.datastore.calc_id, 'sitemesh')
+            show('sitemesh', self.datastore.calc_id)
         self.assertEqual(str(p), '''\
 lon,lat
 0.00000000E+00,0.00000000E+00''')
 
     def test_show_attrs(self):
         with Print.patch() as p:
-            show_attrs(self.datastore.calc_id, 'hcurve')
+            show_attrs('hcurve', self.datastore.calc_id)
         self.assertEqual("'hcurve' is not in %s" % self.datastore, str(p))
 
         with Print.patch() as p:
             self.datastore['one'] = numpy.array([1])
-            show_attrs(self.datastore.calc_id, 'one')
+            show_attrs('one', self.datastore.calc_id)
         self.assertEqual('one has no attributes', str(p))
 
         with Print.patch() as p:
-            show_attrs(self.datastore.calc_id, 'hcurves')
+            show_attrs('hcurves', self.datastore.calc_id)
         self.assertEqual("imtls [['PGA' '3']\n ['SA(0.1)' '3']]\nnbytes 48",
                          str(p))
 
     def test_export_calc(self):
         tempdir = tempfile.mkdtemp()
         with Print.patch() as p:
-            export(self.datastore.calc_id, 'hcurves', export_dir=tempdir)
+            export('hcurves', tempdir, self.datastore.calc_id)
         [fname] = os.listdir(tempdir)
         self.assertIn(str(fname), str(p))
         shutil.rmtree(tempdir)
