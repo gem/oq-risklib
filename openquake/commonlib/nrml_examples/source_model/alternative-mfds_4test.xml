@@ -13,42 +13,42 @@ xmlns:gml="http://www.opengis.net/gml"
         >
             <arbitraryMFD>
                 <magnitudes>
-                    8.6000000E+00 8.8000000E+00 9.0000000E+00
+                    8.6 8.8 9.0
                 </magnitudes>
                 <occurRates>
-                    6.0000000E-04 8.0000000E-04 4.0000000E-04
+                    0.0006 0.0008 0.0004
                 </occurRates>
             </arbitraryMFD>
             <rake>
-                6.0000000E+01
+                60.0
             </rake>
             <surface>
                 <complexFaultGeometry>
                     <faultTopEdge>
                         <gml:LineString>
                             <gml:posList>
-                                -1.2470400E+02 4.0363000E+01 5.4932600E+00 -1.2497700E+02 4.1214000E+01 4.9885600E+00 -1.2514000E+02 4.2096000E+01 4.8973400E+00
+                                -124.704 40.363 5.49326 -124.977 41.214 4.98856 -125.14 42.096 4.89734
                             </gml:posList>
                         </gml:LineString>
                     </faultTopEdge>
                     <intermediateEdge>
                         <gml:LineString>
                             <gml:posList>
-                                -1.2470400E+02 4.0363000E+01 5.5932600E+00 -1.2497700E+02 4.1214000E+01 5.0885600E+00 -1.2514000E+02 4.2096000E+01 4.9973400E+00
+                                -124.704 40.363 5.59326 -124.977 41.214 5.08856 -125.14 42.096 4.99734
                             </gml:posList>
                         </gml:LineString>
                     </intermediateEdge>
                     <intermediateEdge>
                         <gml:LineString>
                             <gml:posList>
-                                -1.2470400E+02 4.0363000E+01 5.6932600E+00 -1.2497700E+02 4.1214000E+01 5.1885600E+00 -1.2514000E+02 4.2096000E+01 5.0973400E+00
+                                -124.704 40.363 5.69326 -124.977 41.214 5.18856 -125.14 42.096 5.09734
                             </gml:posList>
                         </gml:LineString>
                     </intermediateEdge>
                     <faultBottomEdge>
                         <gml:LineString>
                             <gml:posList>
-                                -1.2382900E+02 4.0347000E+01 2.0384900E+01 -1.2413700E+02 4.1218000E+01 1.7413900E+01 -1.2425200E+02 4.2115000E+01 1.7527400E+01
+                                -123.829 40.347 20.3849 -124.137 41.218 17.4139 -124.252 42.115 17.5274
                             </gml:posList>
                         </gml:LineString>
                     </faultBottomEdge>
@@ -63,28 +63,28 @@ xmlns:gml="http://www.opengis.net/gml"
             <simpleFaultGeometry>
                 <gml:LineString>
                     <gml:posList>
-                        -1.2182290E+02 3.7730100E+01 -1.2203880E+02 3.7877100E+01
+                        -121.8229 37.7301 -122.0388 37.8771
                     </gml:posList>
                 </gml:LineString>
                 <dip>
-                    4.5000000E+01
+                    45.0
                 </dip>
                 <upperSeismoDepth>
-                    1.0000000E+01
+                    10.0
                 </upperSeismoDepth>
                 <lowerSeismoDepth>
-                    2.0000000E+01
+                    20.0
                 </lowerSeismoDepth>
             </simpleFaultGeometry>
             <magScaleRel>
                 WC1994
             </magScaleRel>
             <ruptAspectRatio>
-                1.5000000E+00
+                1.5
             </ruptAspectRatio>
-            <YoungsCoppersmithMFD bValue="1.0000000E+00" binWidth="1.0000000E-01" characteristicMag="7.0000000E+00" characteristicRate="5.0000000E-03" minMag="5.0000000E+00"/>
+            <YoungsCoppersmithMFD bValue="1.0" binWidth="0.1" characteristicMag="7.0" characteristicRate="0.005" minMag="5.0"/>
             <rake>
-                3.0000000E+01
+                30.0
             </rake>
         </simpleFaultSource>
     </sourceModel>
