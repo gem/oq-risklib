@@ -14,17 +14,17 @@ xmlns:gml="http://www.opengis.net/gml"
         <assets>
             <asset
             id="asset_01"
-            number="7.0000000E+00"
+            number="7.00000"
             taxonomy="IT-PV"
             >
-                <location lat="4.5166670E+01" lon="9.1500000E+00"/>
+                <location lat="45.16667" lon="9.15000"/>
             </asset>
             <asset
             id="asset_02"
-            number="7.0000000E+00"
+            number="7.00000"
             taxonomy="IT-CE"
             >
-                <location lat="4.5122000E+01" lon="9.1533300E+00"/>
+                <location lat="45.12200" lon="9.15333"/>
             </asset>
         </assets>
     </exposureModel>

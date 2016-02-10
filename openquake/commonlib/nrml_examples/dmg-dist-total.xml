@@ -12,35 +12,35 @@ xmlns:gml="http://www.opengis.net/gml"
         mean="1.0"
         stddev="1.6"
         >
-            no_damage 1.0000000E+00 1.6000000E+00
+            no_damage 1.00000 1.60000
         </damage>
         <damage
         ds="slight"
         mean="34.8"
         stddev="18.3"
         >
-            slight 3.4800000E+01 1.8300000E+01
+            slight 34.80000 18.30000
         </damage>
         <damage
         ds="moderate"
         mean="64.2"
         stddev="19.8"
         >
-            moderate 6.4200000E+01 1.9800000E+01
+            moderate 64.20000 19.80000
         </damage>
         <damage
         ds="extensive"
         mean="64.3"
         stddev="19.7"
         >
-            extensive 6.4300000E+01 1.9700000E+01
+            extensive 64.30000 19.70000
         </damage>
         <damage
         ds="complete"
         mean="64.3"
         stddev="19.7"
         >
-            complete 6.4300000E+01 1.9700000E+01
+            complete 64.30000 19.70000
         </damage>
     </totalDmgDist>
 </nrml>

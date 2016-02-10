@@ -18,10 +18,10 @@ xmlns:gml="http://www.opengis.net/gml"
         dist="LN"
         id="tax1"
         >
-            <params ls="ds1" mean="4.0000000E-02" stddev="0.0000000E+00"/>
-            <params ls="ds2" mean="1.6000000E-01" stddev="0.0000000E+00"/>
-            <params ls="ds3" mean="3.2000000E-01" stddev="0.0000000E+00"/>
-            <params ls="ds4" mean="6.4000000E-01" stddev="0.0000000E+00"/>
+            <params ls="ds1" mean="0.04000" stddev="0.00000"/>
+            <params ls="ds2" mean="0.16000" stddev="0.00000"/>
+            <params ls="ds3" mean="0.32000" stddev="0.00000"/>
+            <params ls="ds4" mean="0.64000" stddev="0.00000"/>
         </consequenceFunction>
     </consequenceModel>
 </nrml>

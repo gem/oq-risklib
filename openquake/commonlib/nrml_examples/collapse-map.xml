@@ -9,7 +9,7 @@ xmlns:gml="http://www.opengis.net/gml"
             srsName="epsg:4326"
             >
                 <gml:pos>
-                    -7.2200000E+01 1.8000000E+01
+                    -72.20000 18.00000
                 </gml:pos>
             </gml:Point>
             <cf
@@ -17,21 +17,21 @@ xmlns:gml="http://www.opengis.net/gml"
             mean="1.6"
             stdDev="1.7"
             >
-                a1 1.6000000E+00 1.7000000E+00
+                a1 1.60000 1.70000
             </cf>
             <cf
             assetRef="a2"
             mean="2.9"
             stdDev="3.1"
             >
-                a2 2.9000000E+00 3.1000000E+00
+                a2 2.90000 3.10000
             </cf>
             <cf
             assetRef="a3"
             mean="4.9"
             stdDev="5.1"
             >
-                a3 4.9000000E+00 5.1000000E+00
+                a3 4.90000 5.10000
             </cf>
         </CMNode>
         <CMNode>
@@ -39,7 +39,7 @@ xmlns:gml="http://www.opengis.net/gml"
             srsName="epsg:4326"
             >
                 <gml:pos>
-                    -7.2250000E+01 1.8000000E+01
+                    -72.25000 18.00000
                 </gml:pos>
             </gml:Point>
             <cf
@@ -47,7 +47,7 @@ xmlns:gml="http://www.opengis.net/gml"
             mean="10.6"
             stdDev="11.7"
             >
-                a4 1.0600000E+01 1.1700000E+01
+                a4 10.60000 11.70000
             </cf>
         </CMNode>
     </collapseMap>

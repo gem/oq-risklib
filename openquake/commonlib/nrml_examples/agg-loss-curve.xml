@@ -5,22 +5,22 @@ xmlns:gml="http://www.opengis.net/gml"
 >
     <aggregateLossCurve
     gsimTreePath="b1 b2"
-    investigationTime="5.0000000E+01"
+    investigationTime="50.00000"
     lossType="structural"
     sourceModelTreePath="b1 b2 b4"
     unit="USD"
     >
         <poEs>
-            9.8728000E-01 9.8266000E-01 9.4957000E-01
+            0.98728 0.98266 0.94957
         </poEs>
         <losses>
-            1.0235400E+01 2.1324321E+01 2.8032432E+01
+            10.23540 21.32432 28.03243
         </losses>
         <averageLoss>
-            1.0000000E+00
+            1.00000
         </averageLoss>
         <stdDevLoss>
-            1.0000000E+01
+            10.00000
         </stdDevLoss>
     </aggregateLossCurve>
 </nrml>

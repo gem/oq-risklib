@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <nrml
 xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
 >
     <fragilityModel
     assetCategory="building"
@@ -20,29 +21,29 @@ xmlns="http://openquake.org/xmlns/nrml/0.5"
         >
             <imls
             imt="MMI"
-            noDamageLimit="5.0000000E+00"
+            noDamageLimit="5.00000"
             >
                 7.0 8.0 9.0 10.0 11.0
             </imls>
             <poes
             ls="minor"
             >
-                0.0 0.09 0.56 0.91 0.98
+                0.00000 0.09000 0.56000 0.91000 0.98000
             </poes>
             <poes
             ls="moderate"
             >
-                0.0 0.0 0.04 0.78 0.96
+                0.00000 0.00000 0.04000 0.78000 0.96000
             </poes>
             <poes
             ls="severe"
             >
-                0.0 0.0 0.0 0.29 0.88
+                0.00000 0.00000 0.00000 0.29000 0.88000
             </poes>
             <poes
             ls="collapse"
             >
-                0.0 0.0 0.0 0.03 0.63
+                0.00000 0.00000 0.00000 0.03000 0.63000
             </poes>
         </fragilityFunction>
         <fragilityFunction
@@ -52,29 +53,29 @@ xmlns="http://openquake.org/xmlns/nrml/0.5"
         >
             <imls
             imt="MMI"
-            noDamageLimit="0"
+            noDamageLimit="0.00000"
             >
                 7.0 8.0 9.0 10.0 11.0
             </imls>
             <poes
             ls="minor"
             >
-                0.0 0.09 0.56 0.92 0.99
+                0.00000 0.09000 0.56000 0.92000 0.99000
             </poes>
             <poes
             ls="moderate"
             >
-                0.0 0.0 0.04 0.79 0.97
+                0.00000 0.00000 0.04000 0.79000 0.97000
             </poes>
             <poes
             ls="severe"
             >
-                0.0 0.0 0.0 0.3 0.89
+                0.00000 0.00000 0.00000 0.30000 0.89000
             </poes>
             <poes
             ls="collapse"
             >
-                0.0 0.0 0.0 0.04 0.64
+                0.00000 0.00000 0.00000 0.04000 0.64000
             </poes>
         </fragilityFunction>
     </fragilityModel>
