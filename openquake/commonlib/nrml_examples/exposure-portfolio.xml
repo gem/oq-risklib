@@ -19,16 +19,8 @@ xmlns:gml="http://www.opengis.net/gml"
                 <costType name="nonstructural" type="aggregated" unit="YEN"/>
                 <costType name="structural" retrofittedType="aggregated" retrofittedUnit="EUR" type="aggregated" unit="YEN"/>
             </costTypes>
-            <deductible
-            isAbsolute="false"
-            >
-                False
-            </deductible>
-            <insuranceLimit
-            isAbsolute="false"
-            >
-                False
-            </insuranceLimit>
+            <deductible isAbsolute="false"/>
+            <insuranceLimit isAbsolute="false"/>
         </conversions>
         <assets>
             <asset
