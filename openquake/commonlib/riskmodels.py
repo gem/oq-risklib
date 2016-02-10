@@ -66,6 +66,22 @@ def get_risk_files(inputs):
     return names.pop(), vfs
 
 
+MIN_IML = 1E-10
+
+
+def check_levels(imls, imt, fname, lineno, min_iml=MIN_IML):
+    """
+    Check the validity of the levels and also replace zeros with min_iml
+    """
+    for i, lev in enumerate(imls):
+        if lev == 0:
+            imls[i] = min_iml
+            # use a cutoff to avoid log(0) in GMPE.to_distribution_values
+            logging.warn('Found minIML=0 in %s, line %s, using %g instead',
+                         fname, lineno, min_iml)
+    valid.check_levels(imls, imt)
+
+
 # ########################### vulnerability ############################## #
 
 def filter_vset(elem):
@@ -218,7 +234,8 @@ def get_vulnerability_functions_05(node, fname):
     for vfun in node.getnodes('vulnerabilityFunction'):
         with context(fname, vfun):
             imt = vfun.imls['imt']
-            imls = numpy.array(~vfun.imls)
+            imls = ~vfun.imls
+            check_levels(imls, imt, fname, vfun.imls.lineno)
             taxonomy = vfun['id']
         if taxonomy in taxonomies:
             raise InvalidFile(
@@ -259,7 +276,7 @@ def get_vulnerability_functions_05(node, fname):
 # ########################### fragility ############################### #
 
 
-def ffconvert(fname, limit_states, ff, min_iml=1E-10):
+def ffconvert(fname, limit_states, ff, min_iml=MIN_IML):
     """
     Convert a fragility function into a numpy array plus a bunch
     of attributes.
@@ -307,7 +324,7 @@ def ffconvert(fname, limit_states, ff, min_iml=1E-10):
             array['stddev'][i] = node['stddev']
     elif ff['format'] == 'discrete':
         attrs['imls'] = valid.positivefloats(~imls)
-        valid.check_levels(attrs['imls'], attrs['imt'])
+        check_levels(attrs['imls'], attrs['imt'], fname, imls.lineno)
         num_poes = len(attrs['imls'])
         array = numpy.zeros((LS, num_poes))
         for i, ls, node in zip(range(LS), limit_states, ff[1:]):
