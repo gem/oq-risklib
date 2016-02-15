@@ -35,7 +35,7 @@ def tidy(fnames):
         with open(fname + '.bak', 'w') as f:
             f.write(open(fname).read())
         with open(fname, 'w') as f:
-            nrml.write(nodes, f)
+            nrml.write(nodes, f, '%.5f')
         print('Reformatted %s, original left in %s.bak' % (fname, fname))
 
 parser = sap.Parser(tidy)

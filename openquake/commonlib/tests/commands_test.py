@@ -106,8 +106,8 @@ xmlns:gml="http://www.opengis.net/gml"
             IMT="PGA"
             ruptureId="scenario-0"
             >
-                <node gmv="1.2651501E-02" lat="4.3581200E+01" lon="1.2124780E+01"/>
-                <node gmv="1.2405629E-02" lat="4.3581200E+01" lon="1.2124780E+01"/>
+                <node gmv="0.01265" lat="43.58120" lon="12.12478"/>
+                <node gmv="0.01241" lat="43.58120" lon="12.12478"/>
             </gmf>
         </gmfSet>
     </gmfCollection>

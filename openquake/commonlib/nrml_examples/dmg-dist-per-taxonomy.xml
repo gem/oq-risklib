@@ -1,32 +1,91 @@
-<?xml version='1.0' encoding='utf-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml"
-      xmlns="http://openquake.org/xmlns/nrml/0.4">
+<?xml version="1.0" encoding="utf-8"?>
+<nrml
+xmlns="http://openquake.org/xmlns/nrml/0.5"
+xmlns:gml="http://www.opengis.net/gml"
+>
     <dmgDistPerTaxonomy>
         <damageStates>
-            no_damage
-            slight
-            moderate
-            extensive
-            complete
+            no_damage slight moderate extensive complete
         </damageStates>
-
-        <!-- Note that, although this element has the same name ("DDNode") as dmgDistPerAsset, the contents are different. -->
         <DDNode>
-            <taxonomy>RC</taxonomy>
-            <!-- 'mean' and 'stddev' are mean and standard deviation over all ground motion fields -->
-            <damage ds="no_damage" mean="1.1" stddev="1.7" />
-            <damage ds="slight" mean="34.9" stddev="18.4" />
-            <damage ds="moderate" mean="64.3"  stddev="19.7" />
-            <damage ds="extensive" mean="64.3"  stddev="19.7" />
-            <damage ds="complete" mean="64.3"  stddev="19.7" />
+            <taxonomy>
+                RC
+            </taxonomy>
+            <damage
+            ds="no_damage"
+            mean="1.1"
+            stddev="1.7"
+            >
+                no_damage 1.10000 1.70000
+            </damage>
+            <damage
+            ds="slight"
+            mean="34.9"
+            stddev="18.4"
+            >
+                slight 34.90000 18.40000
+            </damage>
+            <damage
+            ds="moderate"
+            mean="64.3"
+            stddev="19.7"
+            >
+                moderate 64.30000 19.70000
+            </damage>
+            <damage
+            ds="extensive"
+            mean="64.3"
+            stddev="19.7"
+            >
+                extensive 64.30000 19.70000
+            </damage>
+            <damage
+            ds="complete"
+            mean="64.3"
+            stddev="19.7"
+            >
+                complete 64.30000 19.70000
+            </damage>
         </DDNode>
         <DDNode>
-            <taxonomy>RM</taxonomy>
-            <damage ds="no_damage" mean="1.2" stddev="1.6" />
-            <damage ds="slight" mean="35.0" stddev="18.5" />
-            <damage ds="moderate" mean="64.4"  stddev="19.8" />
-            <damage ds="extensive" mean="64.3"  stddev="19.7" />
-            <damage ds="complete" mean="64.3"  stddev="19.7" />
+            <taxonomy>
+                RM
+            </taxonomy>
+            <damage
+            ds="no_damage"
+            mean="1.2"
+            stddev="1.6"
+            >
+                no_damage 1.20000 1.60000
+            </damage>
+            <damage
+            ds="slight"
+            mean="35.0"
+            stddev="18.5"
+            >
+                slight 35.00000 18.50000
+            </damage>
+            <damage
+            ds="moderate"
+            mean="64.4"
+            stddev="19.8"
+            >
+                moderate 64.40000 19.80000
+            </damage>
+            <damage
+            ds="extensive"
+            mean="64.3"
+            stddev="19.7"
+            >
+                extensive 64.30000 19.70000
+            </damage>
+            <damage
+            ds="complete"
+            mean="64.3"
+            stddev="19.7"
+            >
+                complete 64.30000 19.70000
+            </damage>
         </DDNode>
     </dmgDistPerTaxonomy>
 </nrml>
