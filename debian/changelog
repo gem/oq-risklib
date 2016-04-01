@@ -1,3 +1,6 @@
+  [Graeme Weatherill]
+  * Added an index method to the Node class
+
   [Michele Simionato]
   * Changed the GMF calculator to use a single seed per unique rupture
   * Change the SESCollection exporter: now a single file is exported, before

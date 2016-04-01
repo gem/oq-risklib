@@ -78,6 +78,16 @@ root
         self.assertEqual(root[1], nodes[1])
         self.assertEqual(list(root), nodes)
 
+    def test_index(self):
+        # Tests the index method
+        master_node = n.Node("dummy",
+                             nodes=[n.Node("not here"), n.Node("here")])
+        self.assertEqual(master_node.index("here"), 1)
+        self.assertIsNone(master_node.index("foo"))
+        # Then with an empty node
+        master_node = n.Node("dummy")
+        self.assertIsNone(master_node.index("foo"))
+
     def test_ini(self):
         # can read and write a .ini file converted into a Node object
         inifile = io.StringIO(u"""\
