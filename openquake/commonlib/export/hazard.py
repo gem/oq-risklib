@@ -31,9 +31,11 @@ from openquake.hazardlib.calc import disagg
 from openquake.commonlib.export import export
 from openquake.commonlib.writers import (
     scientificformat, floatformat, write_csv)
-from openquake.commonlib import writers, hazard_writers, util, readinput
+from openquake.commonlib import (
+    writers, hazard_writers, util, readinput, logictree)
 from openquake.risklib.riskinput import create
 from openquake.calculators import calc, base, event_based
+from openquake.calculators.base import get_rlzs_assoc
 
 F32 = numpy.float32
 
@@ -303,7 +305,7 @@ def export_hcurves_csv(ekey, dstore):
     :param dstore: datastore object
     """
     oq = dstore['oqparam']
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     sitecol = dstore['sitecol']
     sitemesh = dstore['sitemesh']
     key, fmt = ekey
@@ -349,7 +351,7 @@ def get_metadata(realizations, kind):
 @export.add(('uhs', 'xml'))
 def export_uhs_xml(ekey, dstore):
     oq = dstore['oqparam']
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     sitemesh = dstore['sitemesh'].value
     key, fmt = ekey
     fnames = []
@@ -390,7 +392,7 @@ def export_hcurves_xml_json(ekey, dstore):
     len_ext = len(export_type) + 1
     oq = dstore['oqparam']
     sitemesh = dstore['sitemesh'].value
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     hcurves = dstore[ekey[0]]
     fnames = []
     writercls = (hazard_writers.HazardCurveGeoJSONWriter
@@ -428,7 +430,7 @@ def export_hmaps_xml_json(ekey, dstore):
     export_type = ekey[1]
     oq = dstore['oqparam']
     sitemesh = dstore['sitemesh'].value
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     hmaps = dstore[ekey[0]]
     fnames = []
     writercls = (hazard_writers.HazardMapGeoJSONWriter
@@ -467,7 +469,7 @@ def export_gmf(ekey, dstore):
     :param dstore: datastore object
     """
     sitecol = dstore['sitecol']
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     oq = dstore['oqparam']
     investigation_time = (None if oq.calculation_mode == 'scenario'
                           else oq.investigation_time)
@@ -512,13 +514,13 @@ def export_gmf_spec(ekey, dstore, spec):
         _, gmfs_by_trt_gsim = base.get_gmfs(dstore)
         gsims = sorted(gsim for trt, gsim in gmfs_by_trt_gsim)
         imts = gmfs_by_trt_gsim[0, gsims[0]].dtype.names
-        gmf_dt = numpy.dtype([(gsim, F32) for gsim in gsims])
+        gmf_dt = numpy.dtype([(str(gsim), F32) for gsim in gsims])
         for eid in eids:
             etag = etags[eid]
             for imt in imts:
                 gmfa = numpy.zeros(len(sitemesh), gmf_dt)
                 for gsim in gsims:
-                    gmfa[gsim] = gmfs_by_trt_gsim[0, gsim][imt][:, eid]
+                    gmfa[str(gsim)] = gmfs_by_trt_gsim[0, gsim][imt][:, eid]
                 dest = dstore.export_path('gmf-%s-%s.csv' % (etag, imt))
                 data = util.compose_arrays(sitemesh, gmfa)
                 writer.save(data, dest)
@@ -590,7 +592,7 @@ def get_rup_idx(ebrup, etag):
 def _get_gmfs(dstore, serial, eid):
     oq = dstore['oqparam']
     min_iml = event_based.fix_minimum_intensity(oq.minimum_intensity, oq.imtls)
-    rlzs_assoc = dstore['rlzs_assoc']
+    rlzs_assoc = get_rlzs_assoc(dstore)
     sitecol = dstore['sitecol'].complete
     N = len(sitecol.complete)
     rup = dstore['sescollection/' + serial]
@@ -679,7 +681,7 @@ DisaggMatrix = collections.namedtuple(
 @export.add(('disagg', 'xml'))
 def export_disagg_xml(ekey, dstore):
     oq = dstore['oqparam']
-    rlzs = dstore['rlzs_assoc'].realizations
+    rlzs = get_rlzs_assoc(dstore).realizations
     group = dstore['disagg']
     fnames = []
     writercls = hazard_writers.DisaggXMLWriter

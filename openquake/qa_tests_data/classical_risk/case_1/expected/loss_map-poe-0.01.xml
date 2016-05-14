@@ -9,7 +9,7 @@ xmlns:gml="http://www.opengis.net/gml"
     lossType="structural"
     poE="0.01"
     riskInvestigationTime="50.0"
-    sourceModelTreePath=""
+    sourceModelTreePath="b_1"
     unit="USD"
     >
         <node>

@@ -8,7 +8,7 @@ xmlns:gml="http://www.opengis.net/gml"
     investigationTime="50.0"
     lossType="structural"
     riskInvestigationTime="50.0"
-    sourceModelTreePath=""
+    sourceModelTreePath="b_1"
     unit="USD"
     >
         <lossCurve
