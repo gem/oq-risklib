@@ -31,12 +31,12 @@ import numpy
 from openquake.hazardlib.geo import geodetic
 from openquake.baselib import general, hdf5
 from openquake.baselib.performance import Monitor
-from openquake.commonlib import (
-    readinput, riskmodels, datastore, source, __version__)
+from openquake.baselib.python3compat import with_metaclass
+from openquake.commonlib import readinput, riskmodels, datastore, source
 from openquake.commonlib.oqvalidation import OqParam
 from openquake.commonlib.parallel import starmap, executor
 from openquake.risklib import riskinput
-from openquake.baselib.python3compat import with_metaclass
+from openquake.calculators import __version__
 
 get_taxonomy = operator.attrgetter('taxonomy')
 get_weight = operator.attrgetter('weight')
