@@ -285,6 +285,15 @@ class Node(object):
             raise TypeError('Expected Node instance, got %r' % node)
         self.nodes.append(node)
 
+    def index(self, tag):
+        """
+        Return the location of the node with the specified tag, or else None
+        """
+        for i, node in enumerate(self.nodes):
+            if tag == node.tag:
+                return i
+        return None
+
     def to_str(self, expandattrs=True, expandvals=True):
         """
         Convert the node into a string, intended for testing/debugging purposes

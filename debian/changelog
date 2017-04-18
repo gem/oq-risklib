@@ -1,3 +1,6 @@
+  [Graeme Weatherill]
+  * Added an index method to the Node class
+
   [Michele Simionato]
   * Reduce the data transfer of the realization association object
   * If uniform_hazard_spectra is true, the UHS curves must be generated
